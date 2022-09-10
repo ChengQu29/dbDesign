@@ -10,3 +10,6 @@ In your team’s GitHub repo, create a folder named “Phase_1” with three PDF
 You may optionally combine your EER, IFD, and report into a single file named team#_p1_report.pdf, if you like keeping everything together in one file.
 
 There may be a grade deduction for any files not named correctly or if we cannot clearly determine which work should be graded in your repository because you did not put them in a “Phase_1” folder.
+
+IDF is shared with everyone and can be found here:
+https://drive.google.com/file/d/1ngYRRwRkNqblIyKiVwcL2sGKcrULRddv/view?usp=sharing
