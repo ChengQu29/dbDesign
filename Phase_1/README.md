@@ -13,3 +13,6 @@ There may be a grade deduction for any files not named correctly or if we cannot
 
 IDF is shared with everyone and can be found here:
 https://drive.google.com/file/d/1ngYRRwRkNqblIyKiVwcL2sGKcrULRddv/view?usp=sharing
+
+Task Decomposition and Abstract code for Information Entry - khtran:
+https://gtvault-my.sharepoint.com/:w:/g/personal/ktran322_gatech_edu/EUgAhoqqLGBDuefB5VXgpeABjYTAvyFtK8DRxf6x1t--TQ?e=0XFbHG
