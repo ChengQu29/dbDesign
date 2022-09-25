@@ -12,7 +12,7 @@ You may optionally combine your EER, IFD, and report into a single file named te
 There may be a grade deduction for any files not named correctly or if we cannot clearly determine which work should be graded in your repository because you did not put them in a “Phase_1” folder.
 
 IDF is shared with everyone and can be found here:
-https://drive.google.com/file/d/1ngYRRwRkNqblIyKiVwcL2sGKcrULRddv/view?usp=sharing
+https://app.diagrams.net/#G1H5iHGv0dQ6PdYUZTGrIjvnhI4JF00-r9
 
 Task Decomposition and Abstract code for Information Entry - khtran:
 https://gtvault-my.sharepoint.com/:w:/g/personal/ktran322_gatech_edu/EUgAhoqqLGBDuefB5VXgpeABjYTAvyFtK8DRxf6x1t--TQ?e=0XFbHG
