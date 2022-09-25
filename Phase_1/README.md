@@ -14,6 +14,9 @@ There may be a grade deduction for any files not named correctly or if we cannot
 IDF is shared with everyone and can be found here:
 https://app.diagrams.net/#G1H5iHGv0dQ6PdYUZTGrIjvnhI4JF00-r9
 
+Data formatting and Business constraints: 
+https://gtvault-my.sharepoint.com/:w:/r/personal/xmu35_gatech_edu/_layouts/15/doc.aspx?sourcedoc=%7B587571bf-cc4e-40fc-9d93-a08331940bbd%7D&action=edit
+
 Task Decomposition and Abstract code for Information Entry - khtran:
 https://gtvault-my.sharepoint.com/:w:/g/personal/ktran322_gatech_edu/EUgAhoqqLGBDuefB5VXgpeABjYTAvyFtK8DRxf6x1t--TQ?e=0XFbHG
 
