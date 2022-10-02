@@ -1,5 +1,7 @@
 # Phase 1 Deliverables:
 
+:q
+
 In your team’s GitHub repo, create a folder named “Phase_1” with three PDF files:
 
 - team#_p1_ifd.pdf - your IFD
@@ -14,7 +16,7 @@ There may be a grade deduction for any files not named correctly or if we cannot
 IDF is shared with everyone and can be found here:
 https://app.diagrams.net/#G1H5iHGv0dQ6PdYUZTGrIjvnhI4JF00-r9
 
-Data formatting and Business constraints: 
+Data formatting and Business constraints - xmu35: 
 https://gtvault-my.sharepoint.com/:w:/r/personal/xmu35_gatech_edu/_layouts/15/doc.aspx?sourcedoc=%7B587571bf-cc4e-40fc-9d93-a08331940bbd%7D&action=edit
 
 Task Decomposition and Abstract code for Information Entry - khtran:
