@@ -1,5 +1,7 @@
 # Phase 1 Deliverables:
 
+:q
+
 In your team’s GitHub repo, create a folder named “Phase_1” with three PDF files:
 
 - team#_p1_ifd.pdf - your IFD
