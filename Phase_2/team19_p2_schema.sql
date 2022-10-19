@@ -1,3 +1,5 @@
+--  Household Information
+
 CREATE TABLE PostalCode(
     postal_code VARCHAR(5) NOT NULL,
     city VARCHAR(50) NOT NULL,
@@ -25,4 +27,31 @@ CREATE TABLE PhoneNumber(
     FK_PhoneNumber_email_HouseHold_email VARCHAR(250) NOT NULL,
     PRIMARY KEY (area_code, number),
     FOREIGN KEY (FK_PhoneNumber_email_HouseHold_email) REFERENCES HouseHold(email)
+);
+
+
+-- Bathroom Information
+
+CREATE TABLE Half (
+	number varchar(255) NOT NULL,
+	sink INT NOT NULL,
+	commode INT NOT NULL,
+	bidet INT NOT NULL,
+	is_primary BOOLEAN NOT NULL,
+	name VARCHAR(255),
+	FK_Half_email__HouseHold_email VARCHAR(250) NOT NULL,
+	FOREIGN KEY (FK_Half_email__HouseHold_email) REFERENCES HouseHold(email)
+);
+
+CREATE TABLE Full (
+	number varchar(255) NOT NULL,
+	sink INT NOT NULL,
+	commode INT NOT NULL,
+	bidet INT NOT NULL,
+	is_primary BOOLEAN NOT NULL,
+	bathtub INT NOT NULL,
+	shower INT NOT NULL,
+	tub_shower INT NOT NULL,
+	FK_Full_email__HouseHold_email VARCHAR(250) NOT NULL,
+	FOREIGN KEY (FK_Full_email__HouseHold_email) REFERENCES HouseHold(email)
 );
