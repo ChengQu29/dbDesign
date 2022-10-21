@@ -40,7 +40,8 @@ CREATE TABLE Half (
 	is_primary BOOLEAN NOT NULL,
 	name VARCHAR(255),
 	FK_Half_email__HouseHold_email VARCHAR(250) NOT NULL,
-	FOREIGN KEY (FK_Half_email__HouseHold_email) REFERENCES HouseHold(email)
+	FOREIGN KEY (FK_Half_email__HouseHold_email) REFERENCES HouseHold(email),
+	PRIMARY KEY (number, FK_Half_email__HouseHold_email)
 );
 
 CREATE TABLE Full (
@@ -53,5 +54,6 @@ CREATE TABLE Full (
 	shower INT NOT NULL,
 	tub_shower INT NOT NULL,
 	FK_Full_email__HouseHold_email VARCHAR(250) NOT NULL,
-	FOREIGN KEY (FK_Full_email__HouseHold_email) REFERENCES HouseHold(email)
+	FOREIGN KEY (FK_Full_email__HouseHold_email) REFERENCES HouseHold(email),
+	PRIMARY KEY (number, FK_Full_email__HouseHold_email)
 );
