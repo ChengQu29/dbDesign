@@ -57,3 +57,63 @@ CREATE TABLE Full (
 	FOREIGN KEY (FK_Full_email__HouseHold_email) REFERENCES HouseHold(email),
 	PRIMARY KEY (number, FK_Full_email__HouseHold_email)
 );
+
+-- Appliance Information
+
+CREATE TABLE Freezer (
+    Model_name VARCHAR(250) NOT NULL,
+	Name VARCHAR(250) NOT NULL,
+	Model_type VARCHAR(250) NOT NULL,   -- type -> Model_type because type means something in sql
+	PRIMARY KEY (Model_name, number),
+	FOREIGN KEY (Freezer_email__HouseHold_email) REFERENCES HouseHold(email)
+);
+
+CREATE TABLE Washer (
+    Model_name VARCHAR(250) NOT NULL,
+	Name VARCHAR(250) NOT NULL,
+	Loading_type VARCHAR(250) NOT NULL,   
+	PRIMARY KEY (Model_name, number),
+	FOREIGN KEY (FK_Washer_email__HouseHold_email) REFERENCES HouseHold(email)
+);
+
+CREATE TABLE Dryer (
+    Model_name VARCHAR(250) NOT NULL,
+	Name VARCHAR(250) NOT NULL,
+	Heat_source VARCHAR(250) NOT NULL,   
+	PRIMARY KEY (Model_name, number),
+	FOREIGN KEY (FK_Dryer_email__HouseHold_email) REFERENCES HouseHold(email)
+);
+
+CREATE TABLE TV (
+    Model_name VARCHAR(250) NOT NULL,
+	Name VARCHAR(250) NOT NULL,
+	Display_type VARCHAR(250) NOT NULL,
+	Display_size FLOAT(20, 10) NOT NULL,
+	Maximum_resolution VARCHAR(250) NOT NULL,	
+	PRIMARY KEY (Model_name, number),
+	FOREIGN KEY (FK_TV_email__HouseHold_email) REFERENCES HouseHold(email)
+);
+
+CREATE TABLE Cooker (
+    Model_name VARCHAR(250) NOT NULL,
+	Name VARCHAR(250) NOT NULL,   
+	PRIMARY KEY (Model_name, number),
+	FOREIGN KEY (FK_Cooker_email__HouseHold_email) REFERENCES HouseHold(email)
+);
+
+CREATE TABLE Oven (
+    Model_name VARCHAR(250) NOT NULL,
+	Name VARCHAR(250) NOT NULL,
+	Heat_source VARCHAR(250) NOT NULL,   
+	Oven_type VARCHAR(250) NOT NULL, 
+	PRIMARY KEY (Model_name, number),
+	FOREIGN KEY (FK_Oven_email__HouseHold_email) REFERENCES HouseHold(email)
+);
+
+CREATE TABLE Cooktop (
+    Model_name VARCHAR(250) NOT NULL,
+	Name VARCHAR(250) NOT NULL,
+	Heat_source VARCHAR(250) NOT NULL,   
+	PRIMARY KEY (Model_name, number),
+	FOREIGN KEY (FK_Cooktop_email__HouseHold_email) REFERENCES HouseHold(email)
+);
