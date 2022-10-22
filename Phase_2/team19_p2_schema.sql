@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS cs6400_2022_03_Team019;
+USE cs6400_2022_03_Team019;
+
 --  Household Information
 
 CREATE TABLE PostalCode(
@@ -60,27 +63,42 @@ CREATE TABLE Full (
 
 -- Appliance Information
 
+CREATE TABLE Manufacturer (
+	name VARCHAR(250) NOT NULL,
+	PRIMARY KEY (name)
+);
+
+
 CREATE TABLE Freezer (
-    Model_name VARCHAR(250) NOT NULL,
-	Name VARCHAR(250) NOT NULL,
-	Model_type VARCHAR(250) NOT NULL,   -- type -> Model_type because type means something in sql
-	PRIMARY KEY (Model_name, number),
-	FOREIGN KEY (Freezer_email__HouseHold_email) REFERENCES HouseHold(email)
+	freezer_id int NOT NULL AUTO_INCREMENT,
+	FK_Freezer_email__HouseHold_email varchar(250) NOT NULL,
+    model_name VARCHAR(250),
+	name VARCHAR(250) NOT NULL,
+	model_type VARCHAR(250) NOT NULL,   -- type -> Model_type because type means something in sql. Need to also change in other reports
+	PRIMARY KEY (freezer_id, FK_Freezer_email__HouseHold_email),
+	FOREIGN KEY (FK_Freezer_email__HouseHold_email) REFERENCES HouseHold(email),
+	FOREIGN KEY (name) REFERENCES Manufacturer(name)
 );
 
 CREATE TABLE Washer (
-    Model_name VARCHAR(250) NOT NULL,
-	Name VARCHAR(250) NOT NULL,
-	Loading_type VARCHAR(250) NOT NULL,   
-	PRIMARY KEY (Model_name, number),
-	FOREIGN KEY (FK_Washer_email__HouseHold_email) REFERENCES HouseHold(email)
+	washer_id int NOT NULL AUTO_INCREMENT,
+	FK_Washer_email__HouseHold_email varchar(250) NOT NULL,
+    model_name VARCHAR(250),
+	name VARCHAR(250) NOT NULL,
+	model_type VARCHAR(250) NOT NULL,   -- type -> Model_type because type means something in sql. Need to also change in other reports
+	PRIMARY KEY (washer_id, FK_Washer_email__HouseHold_email),
+	FOREIGN KEY (FK_Washer_email__HouseHold_email) REFERENCES HouseHold(email),
+	FOREIGN KEY (name) REFERENCES Manufacturer(name)
 );
 
+
 CREATE TABLE Dryer (
+	Dryer_id int NOT NULL AUTO_INCREMENT,
     Model_name VARCHAR(250) NOT NULL,
 	Name VARCHAR(250) NOT NULL,
 	Heat_source VARCHAR(250) NOT NULL,   
 	PRIMARY KEY (Model_name, number),
+	FK_Dryer_email__HouseHold_email varchar(250) NOT NULL,
 	FOREIGN KEY (FK_Dryer_email__HouseHold_email) REFERENCES HouseHold(email)
 );
 

@@ -16,5 +16,18 @@ INSERT INTO Full (number, sink, commode, bidet, is_primary, bathtub, shower, tub
 VALUES (1, 1, 1, 1, True,  0, 1, 0, 'ktran322@gatech.edu');
 
 
+-- Appliances
+insert into Manufacturer (name) values ('Samsung');
+insert into Manufacturer (name) values ('LG');
+insert into Manufacturer (name) values ('GE');
+
+insert into Freezer (FK_Freezer_email__HouseHold_email) values ('ktran322@gatech.edu', 'model blah blah', 'Samsung', 'side-by-side');
+insert into Freezer (FK_Freezer_email__HouseHold_email, name, model_type) values ('ktran322@gatech.edu', 'GE', 'French door');
+
+
+insert into Washer (FK_Washer_email__HouseHold_email, model_name, name, model_type) values ('ktran322@gatech.edu', 'overpriced mistake', 'Samsung', 'top load');
+
+
+
 
 
