@@ -21,13 +21,46 @@ insert into Manufacturer (name) values ('Samsung');
 insert into Manufacturer (name) values ('LG');
 insert into Manufacturer (name) values ('GE');
 
-insert into Freezer (FK_Freezer_email__HouseHold_email) values ('ktran322@gatech.edu', 'model blah blah', 'Samsung', 'side-by-side');
-insert into Freezer (FK_Freezer_email__HouseHold_email, name, model_type) values ('ktran322@gatech.edu', 'GE', 'French door');
+-- insert into Freezer (FK_Freezer_email__HouseHold_email) values ('ktran322@gatech.edu', 'model blah blah', 'Samsung', 'side-by-side');
+insert into Freezer (FK_Freezer_email__HouseHold_email, name, model_name, model_type) values ('ktran322@gatech.edu', 'GE', 'French door', 'chest');
 
+SELECT * FROM PhoneNumber;
 
-insert into Washer (FK_Washer_email__HouseHold_email, model_name, name, model_type) values ('ktran322@gatech.edu', 'overpriced mistake', 'Samsung', 'top load');
+-- by dafault will overwrite Khang's apliance
+SELECT * FROM Freezer; 
 
+-- Force second applince for Khang
+insert into Freezer (freezer_id, FK_Freezer_email__HouseHold_email, name, model_name, model_type) values (0,'ktran322@gatech.edu', 'GE', 'neverworks', 'chest');
 
+SELECT * FROM Freezer;
 
+insert into Washer (washer_id, FK_Washer_email__HouseHold_email, name, model_name, loading_type) values (0, 'ktran322@gatech.edu', 'GE', 'neverworks', 'top');
+insert into Washer (washer_id, FK_Washer_email__HouseHold_email, name, model_name, loading_type) values (0, 'ktran322@gatech.edu', 'GE', 'neverworks', 'front');
+insert into Washer (washer_id, FK_Washer_email__HouseHold_email, name, model_name, loading_type) values (0, 'ktran322@gatech.edu', 'GE', 'neverworks', 'top');
+SELECT * FROM Washer;
+insert into Dryer (Dryer_id, FK_Dryer_email__HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken', 'gas');
+insert into Dryer (Dryer_id, FK_Dryer_email__HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'GE', 'alwaysbroken', 'electric');
+insert into Dryer (Dryer_id, FK_Dryer_email__HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken', 'none');
+SELECT * FROM Dryer;
+
+insert into TV (tv_id, FK_tv_email__HouseHold_email, name, model_name, Display_type, Display_size, Maximum_resolution) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken', 'LCD', 5, '126x126');
+insert into TV (tv_id, FK_tv_email__HouseHold_email, name, model_name, Display_type, Display_size, Maximum_resolution) values (0, 'ktran322@gatech.edu', 'GE', 'alwaysbroken', 'LCD', 0.9, '1000x1000');
+insert into TV (tv_id, FK_tv_email__HouseHold_email, name, model_name, Display_type, Display_size, Maximum_resolution) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken', 'LCD', 0.11111111111111, '4k');
+SELECT * FROM TV;
+
+insert into Oven (Oven_id, FK_Oven_email__HouseHold_email, name, model_name, Heat_source, oven_type) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken', 'gas', 'conventional');
+insert into Oven (Oven_id, FK_Oven_email__HouseHold_email, name, model_name, Heat_source, oven_type) values (0, 'ktran322@gatech.edu', 'GE', 'alwaysbroken', 'electric', 'conventional');
+insert into Oven (Oven_id, FK_Oven_email__HouseHold_email, name, model_name, Heat_source, oven_type) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken', 'none', 'conventional');
+SELECT * FROM Oven;
+
+insert into Cooktop (Cooktop_id, FK_Cooktop_email__HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken', 'gas');
+insert into Cooktop (Cooktop_id, FK_Cooktop_email__HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'GE', 'alwaysbroken', 'electric');
+insert into Cooktop (Cooktop_id, FK_Cooktop_email__HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken', 'none');
+SELECT * FROM Cooktop;
+
+insert into Cooker (Cooker_id, FK_Cooker_email__HouseHold_email, name, model_name) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken');
+insert into Cooker (Cooker_id, FK_Cooker_email__HouseHold_email, name, model_name) values (0, 'ktran322@gatech.edu', 'GE', 'alwaysbroken');
+insert into Cooker (Cooker_id, FK_Cooker_email__HouseHold_email, name, model_name) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken');
+SELECT * FROM Cooker;
 
 

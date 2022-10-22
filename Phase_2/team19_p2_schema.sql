@@ -71,10 +71,10 @@ CREATE TABLE Manufacturer (
 
 CREATE TABLE Freezer (
 	freezer_id int NOT NULL AUTO_INCREMENT,
-	FK_Freezer_email__HouseHold_email varchar(250) NOT NULL,
-    model_name VARCHAR(250),
-	name VARCHAR(250) NOT NULL,
-	model_type VARCHAR(250) NOT NULL,   -- type -> Model_type because type means something in sql. Need to also change in other reports
+	FK_Freezer_email__HouseHold_email varchar(240) NOT NULL,
+    model_name VARCHAR(240),
+	name VARCHAR(240) NOT NULL,
+	model_type VARCHAR(240) NOT NULL,   -- type -> Model_type because type means something in sql. Need to also change in other reports
 	PRIMARY KEY (freezer_id, FK_Freezer_email__HouseHold_email),
 	FOREIGN KEY (FK_Freezer_email__HouseHold_email) REFERENCES HouseHold(email),
 	FOREIGN KEY (name) REFERENCES Manufacturer(name)
@@ -82,56 +82,70 @@ CREATE TABLE Freezer (
 
 CREATE TABLE Washer (
 	washer_id int NOT NULL AUTO_INCREMENT,
-	FK_Washer_email__HouseHold_email varchar(250) NOT NULL,
-    model_name VARCHAR(250),
-	name VARCHAR(250) NOT NULL,
-	model_type VARCHAR(250) NOT NULL,   -- type -> Model_type because type means something in sql. Need to also change in other reports
+	FK_Washer_email__HouseHold_email varchar(240) NOT NULL,
+    model_name VARCHAR(240),
+	name VARCHAR(240) NOT NULL,
+	loading_type VARCHAR(240) NOT NULL,   -- type -> Model_type because type means something in sql. Need to also change in other reports
 	PRIMARY KEY (washer_id, FK_Washer_email__HouseHold_email),
 	FOREIGN KEY (FK_Washer_email__HouseHold_email) REFERENCES HouseHold(email),
 	FOREIGN KEY (name) REFERENCES Manufacturer(name)
 );
 
-
 CREATE TABLE Dryer (
-	Dryer_id int NOT NULL AUTO_INCREMENT,
-    Model_name VARCHAR(250) NOT NULL,
-	Name VARCHAR(250) NOT NULL,
-	Heat_source VARCHAR(250) NOT NULL,   
-	PRIMARY KEY (Model_name, number),
-	FK_Dryer_email__HouseHold_email varchar(250) NOT NULL,
-	FOREIGN KEY (FK_Dryer_email__HouseHold_email) REFERENCES HouseHold(email)
+	dryer_id int NOT NULL AUTO_INCREMENT,
+	FK_Dryer_email__HouseHold_email varchar(240) NOT NULL,
+    Model_name VARCHAR(240) NOT NULL,
+	name VARCHAR(240) NOT NULL,
+	heat_source VARCHAR(240) NOT NULL,   
+	PRIMARY KEY (dryer_id, FK_Dryer_email__HouseHold_email),
+	FOREIGN KEY (FK_Dryer_email__HouseHold_email) REFERENCES HouseHold(email),
+	FOREIGN KEY (name) REFERENCES Manufacturer(name)
 );
 
 CREATE TABLE TV (
-    Model_name VARCHAR(250) NOT NULL,
-	Name VARCHAR(250) NOT NULL,
-	Display_type VARCHAR(250) NOT NULL,
-	Display_size FLOAT(20, 10) NOT NULL,
-	Maximum_resolution VARCHAR(250) NOT NULL,	
-	PRIMARY KEY (Model_name, number),
-	FOREIGN KEY (FK_TV_email__HouseHold_email) REFERENCES HouseHold(email)
+    tv_id int NOT NULL AUTO_INCREMENT,
+    FK_tv_email__HouseHold_email varchar(240) NOT NULL,
+    model_name VARCHAR(240) NOT NULL,
+	name VARCHAR(240) NOT NULL,
+	display_type VARCHAR(240) NOT NULL,
+	display_size FLOAT(21, 11) NOT NULL,
+	maximum_resolution VARCHAR(240) NOT NULL,	
+	PRIMARY KEY (tv_id, FK_tv_email__HouseHold_email),
+	FOREIGN KEY (FK_tv_email__HouseHold_email) REFERENCES HouseHold(email),
+	FOREIGN KEY (name) REFERENCES Manufacturer(name)
 );
 
 CREATE TABLE Cooker (
-    Model_name VARCHAR(250) NOT NULL,
-	Name VARCHAR(250) NOT NULL,   
-	PRIMARY KEY (Model_name, number),
-	FOREIGN KEY (FK_Cooker_email__HouseHold_email) REFERENCES HouseHold(email)
+    cooker_id int NOT NULL AUTO_INCREMENT,
+    FK_cooker_email__HouseHold_email varchar(240) NOT NULL,
+    model_name VARCHAR(240) NOT NULL,
+    name VARCHAR(240) NOT NULL,
+    PRIMARY KEY (cooker_id, FK_cooker_email__HouseHold_email),
+	FOREIGN KEY (FK_cooker_email__HouseHold_email) REFERENCES HouseHold(email),
+	FOREIGN KEY (name) REFERENCES Manufacturer(name)
+
 );
 
 CREATE TABLE Oven (
-    Model_name VARCHAR(250) NOT NULL,
-	Name VARCHAR(250) NOT NULL,
-	Heat_source VARCHAR(250) NOT NULL,   
-	Oven_type VARCHAR(250) NOT NULL, 
-	PRIMARY KEY (Model_name, number),
-	FOREIGN KEY (FK_Oven_email__HouseHold_email) REFERENCES HouseHold(email)
+    oven_id int NOT NULL AUTO_INCREMENT,
+    FK_oven_email__HouseHold_email varchar(240) NOT NULL,
+    model_name VARCHAR(240) NOT NULL,
+	name VARCHAR(240) NOT NULL,
+	heat_source VARCHAR(240) NOT NULL, 
+	oven_type VARCHAR(240) NOT NULL, 
+	PRIMARY KEY (oven_id, FK_oven_email__HouseHold_email),
+	FOREIGN KEY (FK_oven_email__HouseHold_email) REFERENCES HouseHold(email),
+	FOREIGN KEY (name) REFERENCES Manufacturer(name)
 );
 
 CREATE TABLE Cooktop (
-    Model_name VARCHAR(250) NOT NULL,
-	Name VARCHAR(250) NOT NULL,
-	Heat_source VARCHAR(250) NOT NULL,   
-	PRIMARY KEY (Model_name, number),
-	FOREIGN KEY (FK_Cooktop_email__HouseHold_email) REFERENCES HouseHold(email)
+    cooktop_id int NOT NULL AUTO_INCREMENT,
+    FK_cooktop_email__HouseHold_email varchar(240) NOT NULL,
+    model_name VARCHAR(240) NOT NULL,
+	name VARCHAR(240) NOT NULL,
+	heat_source VARCHAR(240) NOT NULL, 
+	PRIMARY KEY (cooktop_id, FK_cooktop_email__HouseHold_email),
+	FOREIGN KEY (FK_cooktop_email__HouseHold_email) REFERENCES HouseHold(email),
+	FOREIGN KEY (name) REFERENCES Manufacturer(name)
 );
+
