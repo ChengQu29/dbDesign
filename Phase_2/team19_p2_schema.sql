@@ -127,25 +127,23 @@ CREATE TABLE Cooker (
 );
 
 CREATE TABLE Oven (
-    oven_id int NOT NULL AUTO_INCREMENT,
+    FK_Oven_id_Cooker_cooker_id int NOT NULL,
     FK_oven_email__HouseHold_email varchar(240) NOT NULL,
-    model_name VARCHAR(240) NOT NULL,
-	name VARCHAR(240) NOT NULL,
-	heat_source VARCHAR(240) NOT NULL, 
+	has_gas_heat_source BOOLEAN NOT NULL, 
+	has_electric_heat_source BOOLEAN NOT NULL,
+	has_microwave_heat_source BOOLEAN NOT NULL, 
 	oven_type VARCHAR(240) NOT NULL, 
-	PRIMARY KEY (oven_id, FK_oven_email__HouseHold_email),
-	FOREIGN KEY (FK_oven_email__HouseHold_email) REFERENCES HouseHold(email),
-	FOREIGN KEY (name) REFERENCES Manufacturer(name)
+	PRIMARY KEY (FK_Oven_id_Cooker_cooker_id, FK_oven_email__HouseHold_email),
+	FOREIGN KEY (FK_Oven_id_Cooker_cooker_id) REFERENCES Cooker(cooker_id),
+	FOREIGN KEY (FK_oven_email__HouseHold_email) REFERENCES HouseHold(email)
 );
 
 CREATE TABLE Cooktop (
-    cooktop_id int NOT NULL AUTO_INCREMENT,
+    FK_Cooktop_id_Cooker_cooker_id int NOT NULL,
     FK_cooktop_email__HouseHold_email varchar(240) NOT NULL,
-    model_name VARCHAR(240) NOT NULL,
-	name VARCHAR(240) NOT NULL,
 	heat_source VARCHAR(240) NOT NULL, 
-	PRIMARY KEY (cooktop_id, FK_cooktop_email__HouseHold_email),
-	FOREIGN KEY (FK_cooktop_email__HouseHold_email) REFERENCES HouseHold(email),
-	FOREIGN KEY (name) REFERENCES Manufacturer(name)
+	PRIMARY KEY (FK_Cooktop_id_Cooker_cooker_id, FK_cooktop_email__HouseHold_email),
+	FOREIGN KEY (FK_Cooktop_id_Cooker_cooker_id) REFERENCES Cooker(cooker_id),
+	FOREIGN KEY (FK_cooktop_email__HouseHold_email) REFERENCES HouseHold(email)
 );
 

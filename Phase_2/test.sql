@@ -48,19 +48,18 @@ insert into TV (tv_id, FK_tv_email__HouseHold_email, name, model_name, Display_t
 insert into TV (tv_id, FK_tv_email__HouseHold_email, name, model_name, Display_type, Display_size, Maximum_resolution) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken', 'LCD', 0.11111111111111, '4k');
 SELECT * FROM TV;
 
-insert into Oven (Oven_id, FK_Oven_email__HouseHold_email, name, model_name, Heat_source, oven_type) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken', 'gas', 'conventional');
-insert into Oven (Oven_id, FK_Oven_email__HouseHold_email, name, model_name, Heat_source, oven_type) values (0, 'ktran322@gatech.edu', 'GE', 'alwaysbroken', 'electric', 'conventional');
-insert into Oven (Oven_id, FK_Oven_email__HouseHold_email, name, model_name, Heat_source, oven_type) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken', 'none', 'conventional');
-SELECT * FROM Oven;
-
-insert into Cooktop (Cooktop_id, FK_Cooktop_email__HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken', 'gas');
-insert into Cooktop (Cooktop_id, FK_Cooktop_email__HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'GE', 'alwaysbroken', 'electric');
-insert into Cooktop (Cooktop_id, FK_Cooktop_email__HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken', 'none');
-SELECT * FROM Cooktop;
 
 insert into Cooker (Cooker_id, FK_Cooker_email__HouseHold_email, name, model_name) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken');
 insert into Cooker (Cooker_id, FK_Cooker_email__HouseHold_email, name, model_name) values (0, 'ktran322@gatech.edu', 'GE', 'alwaysbroken');
 insert into Cooker (Cooker_id, FK_Cooker_email__HouseHold_email, name, model_name) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken');
 SELECT * FROM Cooker;
 
+insert into Oven (FK_Oven_id_Cooker_cooker_id, FK_Oven_email__HouseHold_email, oven_type, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source) values (3, 'ktran322@gatech.edu', 'conventional', TRUE, FALSE, TRUE);
+insert into Oven (FK_Oven_id_Cooker_cooker_id, FK_Oven_email__HouseHold_email, oven_type, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source) values (1, 'ktran322@gatech.edu', 'conventional', FALSE, FALSE, FALSE);
+-- insert into Oven (FK_Oven_id_Cooker_cooker_id, FK_Oven_email__HouseHold_email, oven_type, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source) values (0, 'ktran322@gatech.edu', 'conventional', TRUE, TRUE, TRUE);
+SELECT * FROM Oven;
 
+insert into Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_Cooktop_email__HouseHold_email, Heat_source) values (1, 'ktran322@gatech.edu', 'gas');
+insert into Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_Cooktop_email__HouseHold_email, Heat_source) values (2, 'ktran322@gatech.edu', 'electric');
+insert into Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_Cooktop_email__HouseHold_email, Heat_source) values (3, 'ktran322@gatech.edu', 'none');
+SELECT * FROM Cooktop;
