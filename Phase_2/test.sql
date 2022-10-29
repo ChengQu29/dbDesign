@@ -37,10 +37,41 @@ SELECT * FROM Freezer;
 insert into Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) values (0, 'ktran322@gatech.edu', 'GE', 'neverworks', 'top');
 insert into Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) values (0, 'ktran322@gatech.edu', 'GE', 'neverworks', 'front');
 insert into Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) values (0, 'ktran322@gatech.edu', 'GE', 'neverworks', 'top');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'max@gatech.edu', 'neverworks', 'Samsung', 'front');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'max@gatech.edu', 'neverworks', 'Samsung', 'top');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'max@gatech.edu', 'neverworks', 'Samsung', 'top');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'max@gatech.edu', 'neverworks', 'Samsung', 'front');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'max@gatech.edu', 'neverworks', 'Samsung', 'top');
+
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'jing@gatech.edu', 'neverworks2', 'LG', 'top');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'jing@gatech.edu', 'neverworks2', 'LG', 'front');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'jing@gatech.edu', 'neverworks2', 'LG', 'top');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'jing@gatech.edu', 'neverworks2', 'LG', 'top');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'jing@gatech.edu', 'neverworks2', 'LG', 'top');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'jing@gatech.edu', 'neverworks2', 'LG', 'top');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'jing@gatech.edu', 'neverworks2', 'LG', 'top');
+
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'max@gatech.edu', 'neverworks', 'Samsung', 'front');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) VALUES (0, 'max@gatech.edu', 'neverworks', 'Samsung', 'front');
+INSERT INTO Washer (washer_id, FK_Washer_email_HouseHold_email, name, model_name, loading_type) values (0, 'chengwen@gatech.edu', 'neverworks', 'Samsung', 'front');
 SELECT * FROM Washer;
+
 insert into Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken', 'gas');
 insert into Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'GE', 'alwaysbroken', 'electric');
 insert into Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) values (0, 'ktran322@gatech.edu', 'Samsung', 'alwaysbroken', 'none');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'ktran@gatech.edu', 'neverworks2', 'LG', 'gas');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'ktran@gatech.edu', 'neverworks2', 'LG', 'electric');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'ktran@gatech.edu', 'neverworks2', 'LG', 'none');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'ktran@gatech.edu', 'neverworks2', 'LG', 'none');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'ktran@gatech.edu', 'neverworks2', 'LG', 'none');
+
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'max@gatech.edu', 'neverworks3', 'Samsung', 'gas');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'max@gatech.edu', 'neverworks3', 'Samsung', 'gas');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'max@gatech.edu', 'neverworks3', 'Samsung', 'gas');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'max@gatech.edu', 'neverworks3', 'Samsung', 'gas');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'max@gatech.edu', 'neverworks3', 'Samsung', 'electric');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'mark@gatech.edu', 'neverworks3', 'Samsung', 'electric');
+INSERT INTO Dryer (Dryer_id, FK_Dryer_email_HouseHold_email, name, model_name, Heat_source) VALUES (0, 'mark@gatech.edu', 'neverworks3', 'Samsung', 'electric');
 SELECT * FROM Dryer;
 
 insert into TV (tv_id, FK_tv_email_HouseHold_email, name, model_name, Display_type, Display_size, Maximum_resolution) values (0, 'ktran322@gatech.edu', 'LG', 'alwaysbroken', 'LCD', 5, '126x126');
