@@ -13,7 +13,7 @@ CREATE TABLE PostalCode(
 );
 
 CREATE TABLE HouseHold(
-    email VARCHAR(250) NOT NULL,
+    email VARCHAR(240) NOT NULL,
     square_footage SMALLINT NOT NULL,
     occupant TINYINT NOT NULL,
     bedroom TINYINT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE PhoneNumber(
     area_code VARCHAR(3) NOT NULL,
     number VARCHAR(7) NOT NULL,
     phone_type VARCHAR(6) NOT NULL,
-    FK_PhoneNumber_email_HouseHold_email VARCHAR(250) NOT NULL,
+    FK_PhoneNumber_email_HouseHold_email VARCHAR(240) NOT NULL,
     PRIMARY KEY (area_code, number),
     FOREIGN KEY (FK_PhoneNumber_email_HouseHold_email) REFERENCES HouseHold(email)
 );
@@ -36,19 +36,19 @@ CREATE TABLE PhoneNumber(
 -- Bathroom Information
 
 CREATE TABLE Half (
-	number varchar(255) NOT NULL,
+	number varchar(240) NOT NULL,
 	sink INT NOT NULL,
 	commode INT NOT NULL,
 	bidet INT NOT NULL,
 	is_primary BOOLEAN NOT NULL,
-	name VARCHAR(255),
-	FK_Half_email__HouseHold_email VARCHAR(250) NOT NULL,
+	name VARCHAR(240),
+	FK_Half_email__HouseHold_email VARCHAR(240) NOT NULL,
 	FOREIGN KEY (FK_Half_email__HouseHold_email) REFERENCES HouseHold(email),
 	PRIMARY KEY (number, FK_Half_email__HouseHold_email)
 );
 
 CREATE TABLE Full (
-	number varchar(255) NOT NULL,
+	number varchar(240) NOT NULL,
 	sink INT NOT NULL,
 	commode INT NOT NULL,
 	bidet INT NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE Full (
 	bathtub INT NOT NULL,
 	shower INT NOT NULL,
 	tub_shower INT NOT NULL,
-	FK_Full_email__HouseHold_email VARCHAR(250) NOT NULL,
+	FK_Full_email__HouseHold_email VARCHAR(240) NOT NULL,
 	FOREIGN KEY (FK_Full_email__HouseHold_email) REFERENCES HouseHold(email),
 	PRIMARY KEY (number, FK_Full_email__HouseHold_email)
 );
@@ -64,7 +64,7 @@ CREATE TABLE Full (
 -- Appliance Information
 
 CREATE TABLE Manufacturer (
-	name VARCHAR(250) NOT NULL,
+	name VARCHAR(240) NOT NULL,
 	PRIMARY KEY (name)
 );
 
