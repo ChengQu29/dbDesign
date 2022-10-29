@@ -35,8 +35,7 @@ where num_freezer > 1;
 
 
 --Bathroom Statistics
--- The minimum (as an integer), average (as a decimal number rounded up to the tenths decimal point), and
-maximum (as an integer) count of all bathrooms per household
+-- The minimum (as an integer), average (as a decimal number rounded up to the tenths decimal point), and maximum (as an integer) count of all bathrooms per household
 
 SELECT MIN(Cnt) AS min_bath_perhousehold, AVG(Cnt) AS avg_bath_perhousehold, MAX(Cnt) AS max_bath_perhousehold FROM (SELECT FK_Half_email_HouseHold_email, Count(*) as 'Cnt' FROM (SELECT number, FK_Half_email_HouseHold_email FROM Half UNION ALL
 SELECT number, FK_Full_email_HouseHold_email FROM Full) Bathrooms
@@ -73,5 +72,23 @@ SELECT MIN(tub_shower_count) AS min_tub_shower_perhousehold, AVG(tub_shower_coun
 SELECT number, FK_Full_email_HouseHold_email, tub_shower FROM Full) Bathrooms
 GROUP BY FK_Full_email_HouseHold_email) tub_shower_cnt
 -- Which state has the most bidets (count of all bidets as an integer), and how many
+(SELECT state as 'state_with_most_bidets', SUM(bidet) as 'bidet_count' FROM ((SELECT PostalCode.state AS 'state' , HouseHold.email, Full.bidet FROM PostalCode
+ JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
+JOIN Full ON HouseHold.email=Full.FK_Full_email_HouseHold_email) UNION ALL
+(SELECT PostalCode.state, HouseHold.email, Half.bidet FROM PostalCode
+ JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
+JOIN Half ON HouseHold.email=Half.FK_Half_email_HouseHold_email)) state_bidets
+GROUP BY state) ORDER BY `bidet_count` desc  LIMIT 1;
+
 -- Which postal code has the most bidets (count of all bidets as an integer), and how many
+(SELECT postal_code as 'postal_with_most_bidets', SUM(bidet) as 'bidet_count' FROM ((SELECT PostalCode.postal_code AS 'postal_code' , HouseHold.email, Full.bidet FROM PostalCode
+ JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
+JOIN Full ON HouseHold.email=Full.FK_Full_email_HouseHold_email) UNION ALL
+(SELECT PostalCode.postal_code, HouseHold.email, Half.bidet FROM PostalCode
+ JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
+JOIN Half ON HouseHold.email=Half.FK_Half_email_HouseHold_email)) state_bidets
+GROUP BY postal_code) ORDER BY `bidet_count` desc  LIMIT 1;
 -- How many households (count as an integer), have only a single, primary bathroom, and no other bathrooms
+SELECT COUNT(*) as 'single_bath_household_cnt' FROM (SELECT FK_Half_email_HouseHold_email, Count(*) as 'Cnt' FROM (SELECT number, FK_Half_email_HouseHold_email FROM Half UNION ALL
+SELECT number, FK_Full_email_HouseHold_email FROM Full) Bathrooms
+GROUP BY FK_Half_email_HouseHold_email HAVING Cnt=1) single_bath_counts
