@@ -89,6 +89,7 @@ JOIN Full ON HouseHold.email=Full.FK_Full_email_HouseHold_email) UNION ALL
 JOIN Half ON HouseHold.email=Half.FK_Half_email_HouseHold_email)) state_bidets
 GROUP BY postal_code) ORDER BY `bidet_count` desc  LIMIT 1;
 -- How many households (count as an integer), have only a single, primary bathroom, and no other bathrooms
-SELECT COUNT(*) as 'single_bath_household_cnt' FROM (SELECT FK_Half_email_HouseHold_email, Count(*) as 'Cnt' FROM (SELECT number, FK_Half_email_HouseHold_email FROM Half UNION ALL
-SELECT number, FK_Full_email_HouseHold_email FROM Full) Bathrooms
-GROUP BY FK_Half_email_HouseHold_email HAVING Cnt=1) single_bath_counts
+(SELECT COUNT(*) as 'single_bath_household_cnt' FROM (SELECT FK_Full_email_HouseHold_email, Count(*) as 'Cnt' FROM (SELECT number, FK_Full_email_HouseHold_email FROM Full UNION ALL
+SELECT number, FK_Half_email_HouseHold_email FROM Half) Bathrooms WHERE EXISTS (SELECT * FROM Full WHERE 
+                                                                                (Full.FK_Full_email_HouseHold_email=Bathrooms.FK_Full_email_HouseHold_email AND Full.is_primary=1))
+GROUP BY FK_Full_email_HouseHold_email HAVING Cnt=1) single_bath_counts)
