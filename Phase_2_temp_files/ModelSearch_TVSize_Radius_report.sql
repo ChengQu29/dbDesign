@@ -6,7 +6,7 @@ SELECT  freezer_id, FK_Freezer_email_HouseHold_email, model_name, name FROM Free
 SELECT tv_id, FK_tv_email_HouseHold_email, model_name, name from TV  UNION
 SELECT  washer_id,  FK_Washer_email_HouseHold_email, model_name, name FROM Washer ) Appliances
 WHERE model_name LIKE "%L%"
-ORDER BY model_name, name DESC
+ORDER BY model_name, name ASC
 
 -- average TV size
 SELECT state, AVG(display_size) AS Average_size FROM
@@ -17,6 +17,27 @@ join TV
 ON Household.email = TV.FK_tv_email_HouseHold_email) ALL_TV_IN_STATE
 group by state
 ORDER BY STATE ASC
+
+--drill down report
+WITH x1 AS (
+	SELECT state, AVG(display_size) AS Average_size FROM
+	(select state, postal_code, email, display_size from postalCode
+	join Household
+	ON postal_code = Household.FK_HouseHold_postal_code_PostalCode_postal_code
+	join TV
+	ON Household.email = TV.FK_tv_email_HouseHold_email) ALL_TV_IN_STATE
+	GROUP BY state
+	ORDER BY state ASC),
+x2 AS (
+SELECT state, display_type, maximum_resolution from PostalCode  
+JOIN Household  
+ON postal_code = HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code  
+JOIN TV  
+ON HouseHold.email = TV.FK_tv_email_HouseHold_email)
+select x1.state, display_type AS screen_type, maximum_resolution, FORMAT(Average_size, '2.#') AS Average_size from x1
+JOIN
+x2
+WHERE x1.state = 'LA'
 
 -- radius query
 SELECT postal_code, DistanceFromInputLocation, AVG(occupant), AVG(bedroom), AVG(NumberOfBathroom), AVG(RatioOfCommodeToOccupant) 
