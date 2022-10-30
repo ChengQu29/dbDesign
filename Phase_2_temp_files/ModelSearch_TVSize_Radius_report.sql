@@ -9,7 +9,7 @@ WHERE model_name LIKE "%L%"
 ORDER BY model_name, name ASC
 
 -- average TV size
-SELECT state, AVG(display_size) AS Average_size FROM
+SELECT state, FORMAT(AVG(display_size), '2.#') AS Average_size FROM
 (select state, postal_code, email, display_size from postalCode
 join Household
 ON postal_code = Household.FK_HouseHold_postal_code_PostalCode_postal_code
