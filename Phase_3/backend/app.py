@@ -29,9 +29,6 @@ class Household(Resource):
 
         '''
         try:
-            print(email)
-            if not email:
-                return('missing parameter', 400)
             db.cursor.execute('''SELECT email FROM HouseHold 
             WHERE HouseHold.email = %s''', (email, ))
             res = db.cursor.fetchall()

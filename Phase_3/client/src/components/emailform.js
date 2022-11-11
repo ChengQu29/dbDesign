@@ -20,25 +20,34 @@ export let EmailForm = () => {
     const [apiResponse, setApiResponse] = useState();
 
 
-
-
-
-    // the function that will be trigger once the form is submitted
     const onSubmitFunc = async (data) => {
         const email = data['email']
-        // console.log(email)
         const url = 'http://127.0.0.1:5000/household'
-        const res = await axios.get(`${url}/${email}`);
-        console.log(res.data['existed'])
-        setApiResponse(res.data['existed'])
-        // console.log(apiResponse)
+        const res = fetch(`${url}/${email}`)
+            .then(response => response.text())
+            .then(data => setApiResponse(data)); // update the state. 
     };
 
-    useEffect( () => {
-        console.log(apiResponse)
-    }, [apiResponse]);
+    // the function that will be trigger once the form is submitted
+    // const onSubmitFunc = async (data) => {
+    //     const email = data['email']
+    //     // console.log(email)
+    //     const url = 'http://127.0.0.1:5000/household'
+    //     const res = await axios.get(`${url}/${email}`);
+    //     console.log(res.data['existed'])
+    //     setApiResponse(res.data['existed'])
+    //     // console.log(apiResponse)
+    // };
 
-
+    // useEffect( () => {
+    //     // console.log(apiResponse)
+    //     if (apiResponse === true) {
+    //         console.log('acceptable email message')
+    //     }
+    //     else {
+    //         console.log('email existed')
+    //     }
+    // }, [apiResponse]);
     
     return(
         <div>
@@ -52,6 +61,9 @@ export let EmailForm = () => {
                 <Button as='input' type='submit' value='verify'></Button>{' '}
             </Form>
             <div>{apiResponse}</div>
+
+
+
 
 
 
