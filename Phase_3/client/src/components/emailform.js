@@ -1,61 +1,71 @@
-import {React, useState, useEffect} from "react";
-import {useForm} from "react-hook-form";
-// bootstrap components
-import { Form } from "react-bootstrap";
-import Button from 'react-bootstrap/Button';
+import { Row } from "react-bootstrap";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import { Form as ReactFinalForm, Field } from "react-final-form";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { updateEmail } from "../Slices/householdSlice";
 
-import axios from 'axios';
+// TODO: Remove fake remote email validation promise
+const fakeRemoteValidationPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve([]);
+    }, 300);
+});
 
-
-export let EmailForm = () => {
-    // declare the Hook form.
-    // register: used to assign value of the form to variables
-    // handleSubmit: to call the function that will handle the submission. In this example, it is onSubmitFunc
-    const {register, handleSubmit} = useForm('');
-
-    // react hook useState
-    // apiResponse: the state
-    // setApiResponse: the function that update the state
-    // One important thing to know about the state is that if it is update, the component will be rerendered
-    const [apiResponse, setApiResponse] = useState();
-
-
-
-
-
-    // the function that will be trigger once the form is submitted
-    const onSubmitFunc = async (data) => {
-        const email = data['email']
-        // console.log(email)
-        const url = 'http://127.0.0.1:5000/household'
-        const res = await axios.get(`${url}/${email}`);
-        console.log(res.data['existed'])
-        setApiResponse(res.data['existed'])
-        // console.log(apiResponse)
+const EmailForm = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const onSubmit = async form => {
+        // TODO: Remove fake remote email validation
+        try {
+            const email = await fakeRemoteValidationPromise;
+            if(email.length > 0) {
+                return { email: "Email already exists" };
+            }
+        } catch(error) {
+            return { email: "Something is wrong" };
+        }
+        console.log("Success");
+        console.log(`Form content ${ form.email }`);
+        dispatch(updateEmail({ email: form.email }));
+        navigate("/household/postalCode");
     };
-
-    useEffect( () => {
-        console.log(apiResponse)
-    }, [apiResponse]);
-
-
-    
-    return(
-        <div>
-
-            <Form onSubmit = {handleSubmit(onSubmitFunc)}>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" {...register("email")} />
-                    <Form.Text className="text-muted">We'll never share your email with anyone else.</Form.Text>
-                </Form.Group>
-                <Button as='input' type='submit' value='verify'></Button>{' '}
-            </Form>
-            <div>{apiResponse}</div>
-
-
-
-        </div>
-    )
+    const validateForm = values => {
+        const errors = {};
+        if (!values.email) {
+            errors.email = 'Required';
+        } else {
+            const emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            if (!values.email.match(emailPattern)) {
+                errors.email = 'Email format is incorrect';
+            }
+        }
+        return errors;
+    };
+    return (
+        <Row>
+            <h3>Enter household info</h3>
+            <ReactFinalForm onSubmit={onSubmit} validate={validateForm}>
+                {props => (
+                    <Form onSubmit={props.handleSubmit}>
+                        <Field name="email">
+                            {({input, meta}) => (
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Please enter your email address:</Form.Label>
+                                    <Form.Control placeholder="george.burdell@ramblinwreck.com" {...input} />
+                                    {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
+                                </Form.Group>
+                            )}
+                        </Field>
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </Form>
+                )}
+            </ReactFinalForm>
+        </Row>
+    );
 }
 
+export default EmailForm;
