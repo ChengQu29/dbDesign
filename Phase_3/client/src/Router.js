@@ -1,11 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "./Components/App";
-import EmailForm from "./Components/EmailForm";
-import PostalCodeForm from "./Components/PostalCodeForm";
-import PhoneNumberForm from "./Components/PhoneNumberForm";
-import HouseholdForm from "./Components/HouseholdForm";
-import BathroomList from "./Components/BathroomList";
-import BathroomForm from "./Components/BathroomForm";
+import App from "./components/App";
+import EmailForm from "./components/EmailForm";
+import PostalCodeForm from "./components/PostalCodeForm";
+import PhoneNumberForm from "./components/PhoneNumberForm";
+import HouseholdForm from "./components/HouseholdForm";
+import BathroomList from "./components/BathroomList";
+import BathroomForm from "./components/BathroomForm";
 
 const router = createBrowserRouter([
     {
