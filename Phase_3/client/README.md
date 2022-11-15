@@ -1,5 +1,5 @@
-# To install the dependency
-### `npm install1
+## To install the dependency
+### `npm install1`
 
 # Getting Started with Create React App
 
