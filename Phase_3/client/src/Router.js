@@ -6,6 +6,7 @@ import PhoneNumberForm from "./components/PhoneNumberForm";
 import HouseholdForm from "./components/HouseholdForm";
 import BathroomList from "./components/BathroomList";
 import BathroomForm from "./components/BathroomForm";
+import Top25Manufacturers from "./components/Top25Manufacturers"
 
 const router = createBrowserRouter([
     {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
     {
         path: "/bathroom/form",
         element: <BathroomForm />,
+    },
+    {
+        path: "/reports/top25manufacturers",
+        element: <Top25Manufacturers/>,
     }
 ]);
 
