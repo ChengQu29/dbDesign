@@ -26,7 +26,6 @@ class Household(Resource):
         return: Code 200: False if it has not existed. True otherwise
                 Code 400: Missing params
                 Code 500: internal server error
-
         '''
         try:
             db.cursor.execute('''SELECT email FROM HouseHold 
@@ -73,6 +72,41 @@ class PostalCode(Resource):
 api.add_resource(PostalCode, '/postal_code/<postal_code>')
 
 
+class Top25Manfufacturers(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''select name , count(*)  as frequency from (SELECT cooker_id, FK_cooker_email_HouseHold_email, model_name, name FROM Cooker UNION
+            SELECT dryer_id, FK_Dryer_email_HouseHold_email, Model_name, name FROM Dryer UNION
+            SELECT freezer_id, FK_Freezer_email_HouseHold_email, model_name, name FROM Freezer UNION
+            SELECT tv_id, FK_tv_email_HouseHold_email, model_name, name FROM TV UNION SELECT washer_id, FK_Washer_email_HouseHold_email, model_name, name FROM Washer) Appliances group by name order by frequency desc limit 25''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(Top25Manfufacturers, '/reports/top25manufacturers')
+
+
+
+class ManufacturerDrillDown(Resource):
+    def get(self, manufacturer):
+        try:
+            db.cursor.execute('''
+            SELECT appliance_type, count(*) AS frequency FROM
+            (SELECT 'Cooker' AS appliance_type, cooker_id, FK_cooker_email_HouseHold_email, model_name, name FROM Cooker UNION
+            SELECT 'Dryer' AS appliance_type, dryer_id, FK_Dryer_email_HouseHold_email, Model_name, name FROM Dryer UNION
+            SELECT 'Freezer' AS appliance_type, freezer_id, FK_Freezer_email_HouseHold_email, model_name, name FROM Freezer UNION
+            SELECT 'TV' AS appliance_type, tv_id, FK_tv_email_HouseHold_email, model_name, name from TV UNION
+            SELECT 'Washer' AS appliance_type, washer_id, FK_Washer_email_HouseHold_email, model_name, name FROM Washer) Appliances
+            WHERE name =  %s
+            GROUP BY name, appliance_type''', (manufacturer,))
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+api.add_resource(ManufacturerDrillDown, '/reports/manufacturer_drill_down/<manufacturer>')
 
 
 
