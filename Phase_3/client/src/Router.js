@@ -6,13 +6,10 @@ import PhoneNumberForm from "./components/PhoneNumberForm";
 import HouseholdForm from "./components/HouseholdForm";
 import BathroomList from "./components/BathroomList";
 import BathroomForm from "./components/BathroomForm";
-<<<<<<< HEAD
 import ReportOverview from "./components/ReportOverview";
 import ReportManuModelSrch from "./components/ReportManuModelSrch";
 import ReportLaundryCnt from "./components/ReportLaundryCnt";
-=======
 import Top25Manufacturers from "./components/Top25Manufacturers"
->>>>>>> origin/dev/web-app-2
 
 const router = createBrowserRouter([
     {
@@ -44,7 +41,6 @@ const router = createBrowserRouter([
         element: <BathroomForm />,
     },
     {
-<<<<<<< HEAD
         path: "/reports",
         element: <ReportOverview />,
     },
@@ -55,10 +51,10 @@ const router = createBrowserRouter([
     {
         path: "/reports/laundryCenter",
         element: <ReportLaundryCnt />,
-=======
+    },
+    {
         path: "/reports/top25manufacturers",
         element: <Top25Manufacturers/>,
->>>>>>> origin/dev/web-app-2
     }
 ]);
 
