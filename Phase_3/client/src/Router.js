@@ -6,6 +6,9 @@ import PhoneNumberForm from "./components/PhoneNumberForm";
 import HouseholdForm from "./components/HouseholdForm";
 import BathroomList from "./components/BathroomList";
 import BathroomForm from "./components/BathroomForm";
+import ReportOverview from "./components/ReportOverview";
+import ReportManuModelSrch from "./components/ReportManuModelSrch";
+import ReportLaundryCnt from "./components/ReportLaundryCnt";
 
 const router = createBrowserRouter([
     {
@@ -35,6 +38,18 @@ const router = createBrowserRouter([
     {
         path: "/bathroom/form",
         element: <BathroomForm />,
+    },
+    {
+        path: "/reports",
+        element: <ReportOverview />,
+    },
+    {
+        path: "/reports/ManuModelSearch",
+        element: <ReportManuModelSrch />,
+    },
+    {
+        path: "/reports/laundryCenter",
+        element: <ReportLaundryCnt />,
     }
 ]);
 

@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function App() {
-  const state = useSelector(state => state.household);
-  console.log(state);
+  const household = useSelector(state => state.household);
+  console.log(household);
   return (
     <Row>
       <h3>Welcome to Hemkraft!</h3>
