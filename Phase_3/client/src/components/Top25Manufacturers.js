@@ -1,102 +1,77 @@
-import { useState } from "react";
-import { Row } from "react-bootstrap";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { Form as ReactFinalForm, Field } from "react-final-form";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { updatePostalCode } from "../Slices/householdSlice";
+import { React, useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { Form, Row } from "react-bootstrap";
+import Accordion from 'react-bootstrap/Accordion';
+import Button from 'react-bootstrap/Button';
+import axios from 'axios';
 
-// TODO: Remove fake remote postal code validation promise
-const fakeRemoteValidationPromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve([{ city: "Atlanta", state: "GA" },]);
-    }, 300);
-});
 
-const PostalCodeForm = () => {
-    const [postalCodeInformation, setPostalCodeInformation] = useState([]);
-    const postalCodeState = useSelector(state => state.household.postalCode);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const onSubmit = async form => {
-        // TODO: Remove fake postal code validation
-        try {
-            const postalCode = await fakeRemoteValidationPromise;
-            if(postalCode.length === 0) {
-                return { postalCode: "Postal Code cannot be found" };
-            }
-            dispatch(updatePostalCode({ postalCode: form.postalCode }));
-            setPostalCodeInformation(postalCode);
-        } catch(error) {
-            return { postalCode: "Something is wrong" };
-        }
 
-    };
-    const handleConfirm = async () => {
-        try {
-            console.log("Success");
-            console.log(`Form content ${ postalCodeState }`);
-            navigate("/household/phoneNumber");
-        } catch (error) {
-            console.log("Something is wrong");
+
+const Top25Manufacturers = () => {
+    const [top25, setTop25] = useState({});
+    const [manufacturerDrillDown, setManufacturerDrillDown] = useState({});
+    const {register, handleSubmit} = useForm('');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const url = 'http://127.0.0.1:5000/reports/top25manufacturers'
+            const res = await axios.get(`${url}`)
+            // console.log(res.data['result'])
+            setTop25(res.data['result'])
         }
+        fetchData()
+
+
+    }, [])
+
+
+    const onSubmitFunc = async (data) => {
+        const manufacturer= data['manufacturer']
+        const url = 'http://127.0.0.1:5000/reports/manufacturer_drill_down/'
+        const res = await axios.get(`${url}/${manufacturer}`)
+        console.log(res.data['result'])
+        setManufacturerDrillDown(res.data['result'])
     };
-    const handleCancelConfirm = () => {
-        setPostalCodeInformation([]);
-        dispatch(updatePostalCode({ postalCode: null }));
-    }
-    const validateForm = values => {
-        const errors = {};
-        if (!values.postalCode) {
-            errors.postalCode = 'Required';
-        } else {
-            const postalCodePattern = /^\d{5}$/;
-            if (!values.postalCode.match(postalCodePattern)) {
-                errors.postalCode = 'PostalCode format is incorrect';
-            }
-        }
-        return errors;
-    };
-    return (
-        <Row>
-            <h3>Enter household info</h3>
-            {postalCodeInformation.length === 0 ?
-            <ReactFinalForm onSubmit={onSubmit} validate={validateForm}>
-                {props => (
-                    <Form onSubmit={props.handleSubmit}>
-                        <Field name="postalCode">
-                            {({input, meta}) => (
-                                <Form.Group className="mb-3">
-                                    <Form.Label>Please enter your five digits postal code:</Form.Label>
-                                    <Form.Control placeholder="30332" {...input} />
-                                    {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
-                                </Form.Group>
-                            )}
-                        </Field>
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
-                    </Form>
-                )}
-            </ReactFinalForm>
-            :
-            <>
-                <Row className="text-center">
-                    <p>You entered the following postal code:</p>
-                    <p><b>{postalCodeState}</b></p>
-                    <p>{postalCodeInformation[0].city}, {postalCodeInformation[0].state}</p>
-                    <br></br>
-                    <p>Is this correct?</p>
-                </Row>
-                <Row className="d-grid gap-2">
-                    <Button variant="primary" onClick={handleConfirm}>Yes</Button>
-                    <Button variant="light" onClick={handleCancelConfirm}>No</Button>
-                </Row>
-            </>
-            }
-        </Row>
-    );
+
+
+
+    return(
+        <div>
+            {/* Top 25 Table */}
+            <h3>Top 25 Manufacturers</h3>
+            <div>
+                    { JSON.stringify(top25) !== '{}' ?
+                    JSON.stringify(top25) 
+                    :
+                    undefined}
+            </div>
+        
+            {/* Drill Down Report */}
+            <Accordion className="mt-3">
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header>Manufacturer Drill Down</Accordion.Header>
+                        <Accordion.Body>
+                            <Row>
+                                <Form onSubmit = {handleSubmit(onSubmitFunc)}>
+                                        <Form.Group>
+                                            <Form.Label>Enter a Manufacturer</Form.Label>
+                                            <Form.Control type="manufacturer" placeholder="e.g. Whirlpool"  {...register("manufacturer")}></Form.Control>
+                                        </Form.Group>
+                                    <Button as='input' type='submit' value='submit' className="mt-2"	></Button>{' '}
+                                </Form>
+                            </Row>
+                            <div>{ JSON.stringify(manufacturerDrillDown) !== '{}' ?
+                             JSON.stringify(manufacturerDrillDown) 
+                             :
+                            undefined}</div>
+                        </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
+
+
+        </div>
+    )
 }
 
-export default PostalCodeForm;
+export default Top25Manufacturers
