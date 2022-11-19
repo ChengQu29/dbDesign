@@ -18,6 +18,16 @@ activate the env
 ```bash
 source backend_env/bin/activate
 ```
+For Windows users:
+You first need to allow running custom scripts in shell:
+```bash
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+To start virtual enviroment Windows users need to run the folowing:
+```bash
+.\backend_env\Scripts\activate
+```
+
 Run the app
 ```python
 python app.py
