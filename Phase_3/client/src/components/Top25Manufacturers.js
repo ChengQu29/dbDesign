@@ -3,10 +3,8 @@ import { useForm } from "react-hook-form";
 import { Form, Row } from "react-bootstrap";
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
+import Table from 'react-bootstrap/Table';
 import axios from 'axios';
-
-
-
 
 const Top25Manufacturers = () => {
     const [top25, setTop25] = useState({});
@@ -21,10 +19,7 @@ const Top25Manufacturers = () => {
             setTop25(res.data['result'])
         }
         fetchData()
-
-
     }, [])
-
 
     const onSubmitFunc = async (data) => {
         const manufacturer= data['manufacturer']
@@ -34,21 +29,29 @@ const Top25Manufacturers = () => {
         setManufacturerDrillDown(res.data['result'])
     };
 
-
-
     return(
         <div>
-            {/* Top 25 Table */}
             <h3>Top 25 Manufacturers</h3>
-            <div>
-                    { JSON.stringify(top25) !== '{}' ?
-                    JSON.stringify(top25) 
-                    :
-                    undefined}
-            </div>
-        
-            {/* Drill Down Report */}
-            <Accordion className="mt-3">
+            {/* <div>{ JSON.stringify(top25) !== '{}' ? JSON.stringify(top25) :undefined}</div> */}
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>Manufacturer</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                { 
+             top25 && top25.map && top25.map((row) => {
+                return(<tr key={row[0]}>
+                            <td> {row[0]} </td>
+                            <td>{row[1]} </td>
+                        </tr> )
+                }) }
+                </tbody>
+            </Table>
+
+            <Accordion className="mt-5">
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>Manufacturer Drill Down</Accordion.Header>
                         <Accordion.Body>
@@ -61,10 +64,25 @@ const Top25Manufacturers = () => {
                                     <Button as='input' type='submit' value='submit' className="mt-2"	></Button>{' '}
                                 </Form>
                             </Row>
-                            <div>{ JSON.stringify(manufacturerDrillDown) !== '{}' ?
-                             JSON.stringify(manufacturerDrillDown) 
-                             :
-                            undefined}</div>
+                            {/* <div>{ JSON.stringify(manufacturerDrillDown) !== '{}' ? JSON.stringify(manufacturerDrillDown) : undefined}</div> */}
+                            
+                            <Table >
+                                <thead>
+                                    <tr>
+                                        <th>Appliance</th>
+                                        <th>Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                { manufacturerDrillDown && manufacturerDrillDown.map && manufacturerDrillDown.map((row) => {
+                                return(<tr key={row[0]}>
+                                            <td> {row[0]} </td>
+                                            <td>{row[1]} </td>
+                                        </tr> )
+                                }) }
+                                </tbody>
+                            </Table>
+
                         </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
