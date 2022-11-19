@@ -18,13 +18,12 @@ activate the env
 ```bash
 source backend_env/bin/activate
 ```
-For windows users:
+For Windows users:
 You first need to allow running custom scripts in shell:
 ```bash
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 To start virtual enviroment Windows users need to run the folowing:
-```bash
 ```bash
 .\backend_env\Scripts\activate
 ```
