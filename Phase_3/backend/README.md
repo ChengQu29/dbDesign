@@ -25,7 +25,7 @@ python app.py
 
 install the libraries. Need to be done only once unless there has been additional dependencies.
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 update the libraries if there are additional dependencies
