@@ -6,7 +6,7 @@ RESTful api server for the application
 
 
 ## Installation (one time)
-One time installation. After this step, there will be a ***backend_env*** directory
+One time installation. In the backend/ directory, execute this command. After this step, there will be a ***backend_env/*** directory
 ```bash
 python3 -m venv backend_env 
 ```
@@ -17,6 +17,10 @@ python3 -m venv backend_env
 activate the env
 ```bash
 source backend_env/bin/activate
+```
+Run the app
+```python
+python app.py
 ```
 
 install the libraries. Need to be done only once unless there has been additional dependencies.
