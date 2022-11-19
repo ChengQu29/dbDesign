@@ -1,51 +1,38 @@
-import { useState } from "react";
 import { Row } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Form as ReactFinalForm, Field } from "react-final-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { updatePostalCode } from "../Slices/householdSlice";
-
-// TODO: Remove fake remote postal code validation promise
-const fakeRemoteValidationPromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve([{ city: "Atlanta", state: "GA" },]);
-    }, 300);
-});
+import { updatePostalCode, fetchPostalCode } from "../Slices/householdSlice";
 
 const PostalCodeForm = () => {
-    const [postalCodeInformation, setPostalCodeInformation] = useState([]);
+    const postalCodeInformationState = useSelector(state => state.household.postalCodeInformation);
     const postalCodeState = useSelector(state => state.household.postalCode);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const onSubmit = async form => {
-        // TODO: Remove fake postal code validation
         try {
-            const postalCode = await fakeRemoteValidationPromise;
-            if(postalCode.length === 0) {
+            const fulfilledAction = await dispatch(fetchPostalCode(form.postalCode));
+            console.log("PostalCode form content:", form);
+            if(fulfilledAction.payload.result === "postal code not found") {
                 return { postalCode: "Postal Code cannot be found" };
             }
             dispatch(updatePostalCode({ postalCode: form.postalCode }));
-            setPostalCodeInformation(postalCode);
         } catch(error) {
             return { postalCode: "Something is wrong" };
         }
+    };
 
-    };
     const handleConfirm = async () => {
-        try {
-            console.log("Success");
-            console.log(`Form content ${ postalCodeState }`);
-            navigate("/household/phoneNumber");
-        } catch (error) {
-            console.log("Something is wrong");
-        }
+        navigate("/household/phoneNumber");
     };
+
     const handleCancelConfirm = () => {
-        setPostalCodeInformation([]);
         dispatch(updatePostalCode({ postalCode: null }));
     }
+
     const validateForm = values => {
         const errors = {};
         if (!values.postalCode) {
@@ -58,10 +45,11 @@ const PostalCodeForm = () => {
         }
         return errors;
     };
+
     return (
         <Row>
             <h3>Enter household info</h3>
-            {postalCodeInformation.length === 0 ?
+            {!postalCodeState ?
             <ReactFinalForm onSubmit={onSubmit} validate={validateForm}>
                 {props => (
                     <Form onSubmit={props.handleSubmit}>
@@ -86,8 +74,8 @@ const PostalCodeForm = () => {
             <>
                 <Row className="text-center">
                     <p>You entered the following postal code:</p>
-                    <p><b>{postalCodeState}</b></p>
-                    <p>{postalCodeInformation[0].city}, {postalCodeInformation[0].state}</p>
+                    <p><b>{postalCodeInformationState.postal_code}</b></p>
+                    <p>{postalCodeInformationState.city}, {postalCodeInformationState.state}</p>
                     <br></br>
                     <p>Is this correct?</p>
                 </Row>

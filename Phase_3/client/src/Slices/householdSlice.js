@@ -1,10 +1,27 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const fetchPostalCode = createAsyncThunk('household/fetchPostalCode', async (postalCode) => {
+    const response = await axios.get(`http://127.0.0.1:5000/postal_code/${postalCode}`)
+    return response.data;
+});
+
+export const fetchEmail = createAsyncThunk('household/fetchEmail', async (email) => {
+    const response = await axios.get(`http://127.0.0.1:5000/household/${email}`)
+    return response.data;
+});
+
+export const fetchPhoneNumber = createAsyncThunk('household/fetchPhoneNumber', async (payload) => {
+    const response = await axios.get(`http://127.0.0.1:5000/phone_number/${payload.areaCode}/${payload.number}`)
+    return response.data;
+});
 
 export const householdSlice = createSlice({
     name: 'household',
     initialState: {
         email: null,
         postalCode: null,
+        postalCodeInformation: null,
         areaCode: null,
         number: null,
         phoneType: null,
@@ -31,8 +48,15 @@ export const householdSlice = createSlice({
             state.occupants = action.payload.occupants;
             state.bedrooms = action.payload.bedrooms;
         }
+    },
+    extraReducers(builder) {
+        builder
+          .addCase(fetchPostalCode.fulfilled, (state, action) => {
+              state.postalCodeInformation = action.payload.result;
+          })
     }
 });
+
 
 export const { updateEmail, updatePostalCode, updatePhoneNumber, updateHousehold } = householdSlice.actions;
 export default householdSlice.reducer
