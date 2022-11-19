@@ -21,7 +21,7 @@ const PhoneNumberForm = () => {
         } catch(error) {
             return { areaCode: "Something is wrong", number: "Something is wrong" };
         }
-        console.log("Email form content:", {...form, number: processedNumber, phoneType: form.phoneType ? form.phoneType : "Home"});
+        console.log("Phone number form content:", {...form, number: processedNumber, phoneType: form.phoneType ? form.phoneType : "Home"});
         dispatch(updatePhoneNumber({ areaCode: form.areaCode, number: processedNumber, phoneType: form.phoneType ? form.phoneType : "Home"}));
         navigate("/household/household");
     };
@@ -96,7 +96,7 @@ const PhoneNumberForm = () => {
                         </Form>
                     )}
                 </ReactFinalForm>
-                : <Button onClick={() => {navigate("/")}} variant="primary">Next</Button>
+                : <Button onClick={() => {navigate("/household/household")}} variant="primary">Next</Button>
             }
         </Row>
     );

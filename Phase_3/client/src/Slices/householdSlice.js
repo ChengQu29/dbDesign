@@ -16,6 +16,24 @@ export const fetchPhoneNumber = createAsyncThunk('household/fetchPhoneNumber', a
     return response.data;
 });
 
+export const submitHouseHoldForm = createAsyncThunk('household/submit', async (payload) => {
+    console.log(payload)
+    const formPayload = {
+        email: payload.email,
+        square_footage: payload.squareFootage,
+        occupant: payload.occupants,
+        bedroom: payload.bedrooms,
+        home_type: payload.homeType,
+        postal_code: payload.postalCode,
+        area_code: payload.areaCode,
+        number: payload.number,
+        phone_type: payload.phoneType,
+    };
+    console.log(formPayload);
+    const response = await axios.post(`http://127.0.0.1:5000/household_submission`, formPayload)
+    return response.data;
+});
+
 export const householdSlice = createSlice({
     name: 'household',
     initialState: {
