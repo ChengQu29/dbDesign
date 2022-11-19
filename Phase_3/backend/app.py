@@ -72,6 +72,30 @@ class PostalCode(Resource):
 api.add_resource(PostalCode, '/postal_code/<postal_code>')
 
 
+class PhoneNumber(Resource):
+    def get(self, area_code:str, number:str):
+        '''
+        api request example: 
+        curl --location --request GET '127.0.0.1:5000/phone_number/905/9224143'
+
+        query the PostalCode table for the postal information
+        return: Code 200: False if it has not existed. True otherwise
+                Code 500: internal server error
+        '''       
+        try:
+            db.cursor.execute('''SELECT area_code, number
+            FROM PhoneNumber WHERE
+            PhoneNumber.area_code = %s AND PhoneNumber.number = %s''', (area_code, number))
+            res = db.cursor.fetchall()
+            print(res)
+            if res:
+                return({'existed': True}, 200)
+            return({'existed': False}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+api.add_resource(PhoneNumber, '/phone_number/<area_code>/<number>')
+
+
 class Top25Manfufacturers(Resource):
     def get (self):
         try:
