@@ -36,7 +36,7 @@ const EmailForm = () => {
         if (!values.email) {
             errors.email = 'Required';
         } else {
-            const emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            const emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // eslint-disable-line
             if (!values.email.match(emailPattern)) {
                 errors.email = 'Email format is incorrect';
             }
