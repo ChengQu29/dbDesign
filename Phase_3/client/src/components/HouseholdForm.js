@@ -93,9 +93,11 @@ const HouseholdForm = () => {
                                 </Form.Group>
                             )}
                         </Field>
-                        <Button variant="primary" type="submit">
-                            Next
-                        </Button>
+                        <Row>
+                            <Button variant="primary" type="submit">
+                                Next
+                            </Button>
+                        </Row>
                     </Form>
                 )}
             </ReactFinalForm>

@@ -74,9 +74,11 @@ const PostalCodeForm = () => {
                                 </Form.Group>
                             )}
                         </Field>
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
+                        <Row>
+                            <Button variant="primary" type="submit">
+                                Submit
+                            </Button>
+                        </Row>
                     </Form>
                 )}
             </ReactFinalForm>
