@@ -8,7 +8,7 @@ function ReportOverview() {
       <p>Please choose the report you'd like to review:</p>
       <p><Link to="/reports/top25manufacturers">Top 25 Popular Manufacturers </Link></p>  
       <p><Link to="/reports/ManuModelSearch">Manufacturer & Model Search</Link></p>
-      <p><Link to="/reports/top25manufacturers">Average TV Display Size by State</Link></p>  
+      <p><Link to="/reports/AverageTVdisplaysizebystate">Average TV Display Size by State</Link></p>  
       <p><Link to="/reports/ExtraFridgeFreezerReport">Extra Fridge / Freezer Report </Link></p>  
       <p><Link to="/reports/laundryCenter">Laundry Center Report </Link></p>  
       <p><Link to="/reports/BathroomStatistics">Bathroom Statistics</Link></p>  
