@@ -8,12 +8,12 @@ import axios from 'axios';
 
 const AverageTVdisplaysizebystate = () => {
     const [top25, setTop25] = useState({});
-    const [manufacturerDrillDown, setManufacturerDrillDown] = useState({});
+    const [tvDrillDown, SetTvDrillDown] = useState({});
     const {register, handleSubmit} = useForm('');
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = 'http://127.0.0.1:5000/reports/top25manufacturers'
+            const url = 'http://127.0.0.1:5000/reports/AverageTVdisplaysizebystate'
             const res = await axios.get(`${url}`)
             // console.log(res.data['result'])
             setTop25(res.data['result'])
@@ -22,11 +22,11 @@ const AverageTVdisplaysizebystate = () => {
     }, [])
 
     const onSubmitFunc = async (data) => {
-        const manufacturer= data['manufacturer']
-        const url = 'http://127.0.0.1:5000/reports/manufacturer_drill_down/'
-        const res = await axios.get(`${url}/${manufacturer}`)
+        const state= data['state']
+        const url = 'http://127.0.0.1:5000/reports/AverageTVdisplaysizebystateDrilldown/'
+        const res = await axios.get(`${url}/${state}`)
         console.log(res.data['result'])
-        setManufacturerDrillDown(res.data['result'])
+        SetTvDrillDown(res.data['result'])
     };
 
     return(
@@ -36,8 +36,8 @@ const AverageTVdisplaysizebystate = () => {
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>Manufacturer</th>
-                        <th>Count</th>
+                        <th>State</th>
+                        <th>Average Display Size</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,31 +53,35 @@ const AverageTVdisplaysizebystate = () => {
 
             <Accordion className="mt-5">
                 <Accordion.Item eventKey="0">
-                    <Accordion.Header>Manufacturer Drill Down</Accordion.Header>
+                    <Accordion.Header>Drill Down by State</Accordion.Header>
                         <Accordion.Body>
                             <Row>
                                 <Form onSubmit = {handleSubmit(onSubmitFunc)}>
                                         <Form.Group>
-                                            <Form.Label>Enter a Manufacturer</Form.Label>
-                                            <Form.Control type="manufacturer" placeholder="e.g. Whirlpool"  {...register("manufacturer")}></Form.Control>
+                                            <Form.Label>Enter State</Form.Label>
+                                            <Form.Control type="State" placeholder="e.g. CA"  {...register("state")}></Form.Control>
                                         </Form.Group>
                                     <Button as='input' type='submit' value='submit' className="mt-2"	></Button>{' '}
                                 </Form>
                             </Row>
-                            {/* <div>{ JSON.stringify(manufacturerDrillDown) !== '{}' ? JSON.stringify(manufacturerDrillDown) : undefined}</div> */}
+                            {/* <div>{ JSON.stringify(tvDrillDown) !== '{}' ? JSON.stringify(tvDrillDown) : undefined}</div> */}
                             
                             <Table >
                                 <thead>
                                     <tr>
-                                        <th>Appliance</th>
-                                        <th>Count</th>
+                                        <th>State</th>
+                                        <th>Screen Type</th>
+										<th>Maximum Resolution</th>
+										<th>Average Size</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                { manufacturerDrillDown && manufacturerDrillDown.map && manufacturerDrillDown.map((row) => {
+                                { tvDrillDown && tvDrillDown.map && tvDrillDown.map((row) => {
                                 return(<tr key={row[0]}>
                                             <td> {row[0]} </td>
                                             <td>{row[1]} </td>
+											<td>{row[2]} </td>
+											<td>{row[3]} </td>
                                         </tr> )
                                 }) }
                                 </tbody>
