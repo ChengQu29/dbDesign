@@ -112,6 +112,66 @@ class ManufacturerDrillDown(Resource):
 api.add_resource(ManufacturerDrillDown, '/reports/manufacturer_drill_down/<manufacturer>')
 
 
+class LaundryCnt_WasherDryer(Resource):
+    def get(self):
+        try:
+            db.cursor.execute('''
+            WITH WasherFrequencyPerState AS (SELECT w.loading_type, COUNT(w.loading_type) as frequency, p.state FROM Washer w
+                JOIN HouseHold h ON w.FK_Washer_email_HouseHold_email = h.email
+                JOIN PostalCode p ON h.FK_HouseHold_postal_code_PostalCode_postal_code = p.postal_code
+            GROUP BY w.loading_type, p.state ORDER BY p.state, frequency DESC)
+            ,
+            WasherHighestFrequencyPerState AS (SELECT MAX(w.frequency) AS highest_frequency, w.state FROM WasherFrequencyPerState w GROUP BY w.state),
+            WasherTopPerState AS (SELECT wfps.loading_type, wfps.frequency, wfps.state FROM WasherFrequencyPerState wfps JOIN WasherHighestFrequencyPerState whfps ON whfps.state = wfps.state WHERE whfps.highest_frequency = wfps.frequency),
+            DryerFrequencyPerState AS (SELECT d.heat_source, COUNT(d.heat_source) as frequency, p.state FROM Dryer d
+                JOIN HouseHold h ON d.FK_Dryer_email_HouseHold_email = h.email
+                JOIN PostalCode p ON h.FK_HouseHold_postal_code_PostalCode_postal_code = p.postal_code
+            GROUP BY d.heat_source, p.state ORDER BY p.state, frequency DESC)
+            ,
+            DryerHighestFrequencyPerState AS (SELECT MAX(d.frequency) AS highest_frequency, d.state FROM DryerFrequencyPerState d GROUP BY d.state),
+            DryerTopPerState AS (SELECT dfps.heat_source, dfps.frequency, dfps.state FROM DryerFrequencyPerState dfps JOIN DryerHighestFrequencyPerState dhfps ON dhfps.state = dfps.state WHERE dhfps.highest_frequency = dfps.frequency)
+            SELECT DISTINCT(p.state), wtps.loading_type, dtps.heat_source FROM PostalCode p
+            LEFT JOIN WasherTopPerState wtps
+            ON p.state = wtps.state
+            LEFT JOIN DryerTopPerState dtps
+            ON p.state = dtps.state
+            ORDER BY p.state; ''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+api.add_resource(LaundryCnt_WasherDryer, '/reports/LaundryCnt_WasherDryer')
+
+class LaundryCnt_WasherNoDryer(Resource):
+    def get(self):
+        try:
+            db.cursor.execute('''
+            WITH WasherPerHouseHold AS (SELECT COUNT(h.email) as washer_count_per_household, h.email, p.state FROM HouseHold h
+                JOIN PostalCode p ON h.FK_HouseHold_postal_code_PostalCode_postal_code = p.postal_code
+                RIGHT JOIN Washer w ON w.FK_Washer_email_HouseHold_email = h.email
+            GROUP BY h.email)
+            ,
+            DryerPerHouseHold AS (SELECT COUNT(h.email) as dryer_count_per_household, h.email, p.state FROM HouseHold h
+                JOIN PostalCode p ON h.FK_HouseHold_postal_code_PostalCode_postal_code = p.postal_code
+                RIGHT JOIN Dryer d ON d.FK_Dryer_email_HouseHold_email = h.email
+            GROUP BY h.email)
+            ,
+            WasherDryerPerHouseHold AS (SELECT h.email, wph.washer_count_per_household, dph.dryer_count_per_household, p.state FROM HouseHold h
+                JOIN PostalCode p ON p.postal_code = h.FK_HouseHold_postal_code_PostalCode_postal_code
+                LEFT JOIN WasherPerHouseHold wph ON h.email = wph.email
+                LEFT JOIN DryerPerHouseHold dph ON h.email = dph.email)
+            SELECT wdph.state, COUNT(wdph.email) count_househould_with_washer_no_dryer
+            FROM WasherDryerPerHouseHold wdph
+            WHERE wdph.dryer_count_per_household IS NULL AND wdph.washer_count_per_household IS NOT NULL
+            GROUP BY wdph.state
+            ORDER BY count_househould_with_washer_no_dryer AND wdph.state; ''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+api.add_resource(LaundryCnt_WasherNoDryer, '/reports/LaundryCnt_WasherNoDryer')
 
 if __name__ == '__main__':
     try:
