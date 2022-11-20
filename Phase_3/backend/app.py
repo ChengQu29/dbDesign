@@ -271,6 +271,127 @@ class tvDrillDown(Resource):
             return(f'Server side error: {e}', 500)
 api.add_resource(tvDrillDown, '/reports/AverageTVdisplaysizebystateDrilldown/<state>')
 
+class ExtraFridgeFreezerReport1(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT COUNT(email) AS num_household_multi_freezer FROM ( SELECT FK_Freezer_email_HouseHold_email AS email, 
+			COUNT(FK_Freezer_email_HouseHold_email) AS num_freezer FROM Freezer GROUP by email) Multi_Freezer_Household WHERE num_freezer > 1;
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(ExtraFridgeFreezerReport1, '/reports/ExtraFridgeFreezerReport1')
+
+class ExtraFridgeFreezerReport2(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            select Multi_Freezer_Household.state,
+            FORMAT(Multi_Freezer_Household.num_household_multi_freezer, '0.#'),
+            FORMAT(round(100*Chest_Count.chest_houshold_count/Multi_Freezer_Household.num_household_multi_freezer ), '0.#') as chest_household_percentage,
+            FORMAT(round(100*Upright_Count.upright_householdd_count/Multi_Freezer_Household.num_household_multi_freezer), '0.#') as upright_household_percentage,
+            FORMAT(round(100*Other_Count_Aggregated.other_household_count/Multi_Freezer_Household.num_household_multi_freezer), '0.#') as other_household_percentage
+            FROM
+            (
+            select state, count(state) as num_household_multi_freezer from
+            ( select state, email
+            from PostalCode inner join
+            (select Multi_Freezer_Household.email, FK_HouseHold_postal_code_PostalCode_postal_code as postal_code
+            from HouseHold inner join
+            (select FK_Freezer_email_HouseHold_email as email,
+            count(FK_Freezer_email_HouseHold_email) as num_freezer
+            from Freezer
+            group by email) Multi_Freezer_Household
+            on HouseHold.email = Multi_Freezer_Household.email
+            where Multi_Freezer_Household.num_freezer > 1) Multi_Freezer_Household_PostalCode
+            on PostalCode.postal_code = Multi_Freezer_Household_PostalCode.postal_code) Multi_Freezer_Household_state
+            group by state
+            order by num_household_multi_freezer desc
+            limit 10 ) Multi_Freezer_Household
+            LEFT JOIN
+            (
+            select state, count(email) as chest_houshold_count FROM
+            (
+            select email, model_type, state, count(email) as model_type_individual_household_count from (
+            select FK_Freezer_email_HouseHold_email as email, model_type, state from Freezer inner join
+            ( select state, email
+            from PostalCode inner join
+            (select Multi_Freezer_Household.email, FK_HouseHold_postal_code_PostalCode_postal_code as postal_code
+            from HouseHold inner join
+            (select FK_Freezer_email_HouseHold_email as email,
+            count(FK_Freezer_email_HouseHold_email) as num_freezer
+            from Freezer
+            group by email) Multi_Freezer_Household
+            on HouseHold.email = Multi_Freezer_Household.email
+            where Multi_Freezer_Household.num_freezer > 1) Multi_Freezer_Household_PostalCode
+            on PostalCode.postal_code = Multi_Freezer_Household_PostalCode.postal_code) Multi_Freezer_Household_State
+            on Freezer.FK_Freezer_email_HouseHold_email = Multi_Freezer_Household_State.email ) Multi_Freezer_Household_Type_State
+            group by email, model_type, state) Model_Type_Count
+            group by model_type, state
+            having model_type = 'chest'
+            ) Chest_Count
+            ON Multi_Freezer_Household.state = Chest_Count.state
+            LEFT JOIN
+            (
+            select state, count(email) as upright_householdd_count FROM
+            (
+            select email, model_type, state, count(email) as model_type_individual_household_count from (
+            select FK_Freezer_email_HouseHold_email as email, model_type, state from Freezer inner join
+            ( select state, email
+            from PostalCode inner join
+            (select Multi_Freezer_Household.email, FK_HouseHold_postal_code_PostalCode_postal_code as postal_code
+            from HouseHold inner join
+            (select FK_Freezer_email_HouseHold_email as email,
+            count(FK_Freezer_email_HouseHold_email) as num_freezer
+            from Freezer
+            group by email) Multi_Freezer_Household
+            on HouseHold.email = Multi_Freezer_Household.email
+            where Multi_Freezer_Household.num_freezer > 1) Multi_Freezer_Household_PostalCode
+            on PostalCode.postal_code = Multi_Freezer_Household_PostalCode.postal_code) Multi_Freezer_Household_State
+            on Freezer.FK_Freezer_email_HouseHold_email = Multi_Freezer_Household_State.email ) Multi_Freezer_Household_Type_State
+            group by email, model_type, state) Model_Type_Count
+            group by model_type, state
+            having model_type = 'upright'
+            ) Upright_Count
+            ON Multi_Freezer_Household.state = Upright_Count.state
+            LEFT JOIN
+            (
+            select state, count( DISTINCT email) as other_household_count FROM
+            (
+            select email, model_type, state, count(email) as model_type_individual_household_count from (
+            select FK_Freezer_email_HouseHold_email as email, model_type, state from Freezer inner join
+            ( select state, email
+            from PostalCode inner join
+            (select Multi_Freezer_Household.email, FK_HouseHold_postal_code_PostalCode_postal_code as postal_code
+            from HouseHold inner join
+            (select FK_Freezer_email_HouseHold_email as email,
+            count(FK_Freezer_email_HouseHold_email) as num_freezer
+            from Freezer
+            group by email) Multi_Freezer_Household
+            on HouseHold.email = Multi_Freezer_Household.email
+            where Multi_Freezer_Household.num_freezer > 1) Multi_Freezer_Household_PostalCode
+            on PostalCode.postal_code = Multi_Freezer_Household_PostalCode.postal_code) Multi_Freezer_Household_State
+            on Freezer.FK_Freezer_email_HouseHold_email = Multi_Freezer_Household_State.email ) Multi_Freezer_Household_Type_State
+            group by email, model_type, state
+            having model_type not in ('chest', 'upright')
+            ) household_other_freezer
+            group by state
+            ) Other_Count_Aggregated
+            ON Multi_Freezer_Household.state = Other_Count_Aggregated.state;
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(ExtraFridgeFreezerReport2, '/reports/ExtraFridgeFreezerReport2')
+
+
 if __name__ == '__main__':
     try:
         app.run(debug = True)
