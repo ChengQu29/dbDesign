@@ -5,34 +5,23 @@ import Button from "react-bootstrap/Button";
 import { Form as ReactFinalForm, Field } from "react-final-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { updatePhoneNumber } from "../Slices/householdSlice";
-
-// TODO: Remove fake remote email validation promise
-const fakeRemoteValidationPromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve([]);
-    }, 300);
-});
+import { updatePhoneNumber, fetchPhoneNumber } from "../Slices/householdSlice";
 
 const PhoneNumberForm = () => {
     const dispatch = useDispatch();
     const [isShowPhoneForm, setIsShowPhoneForm] = useState(false);
     const navigate = useNavigate();
     const onSubmit = async form => {
-        // Strip number format
-
-        // TODO: Remove fake remote phone validation
+        const processedNumber = form.number.replace("-", "");
         try {
-            const phone = await fakeRemoteValidationPromise;
-            if(phone.length > 0) {
+            const fulfilledAction = await dispatch(fetchPhoneNumber({areaCode: form.areaCode, number: processedNumber}));
+            if(fulfilledAction.payload.existed) {
                 return { areaCode: "Phone number and area code combination already exists", number: "Phone number and area code combination already exists" };
             }
         } catch(error) {
             return { areaCode: "Something is wrong", number: "Something is wrong" };
         }
-        const processedNumber = form.number.replace("-", "");
-        console.log("Success");
-        console.log({...form, number: processedNumber, phoneType: form.phoneType ? form.phoneType : "Home"});
+        console.log("Phone number form content:", {...form, number: processedNumber, phoneType: form.phoneType ? form.phoneType : "Home"});
         dispatch(updatePhoneNumber({ areaCode: form.areaCode, number: processedNumber, phoneType: form.phoneType ? form.phoneType : "Home"}));
         navigate("/household/household");
     };
@@ -107,7 +96,7 @@ const PhoneNumberForm = () => {
                         </Form>
                     )}
                 </ReactFinalForm>
-                : <Button onClick={() => {navigate("/")}} variant="primary">Next</Button>
+                : <Button onClick={() => {navigate("/household/household")}} variant="primary">Next</Button>
             }
         </Row>
     );

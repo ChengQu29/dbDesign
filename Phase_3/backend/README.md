@@ -6,7 +6,7 @@ RESTful api server for the application
 
 
 ## Installation (one time)
-One time installation. After this step, there will be a ***backend_env*** directory
+One time installation. In the backend/ directory, execute this command. After this step, there will be a ***backend_env/*** directory
 ```bash
 python3 -m venv backend_env 
 ```
@@ -18,10 +18,24 @@ activate the env
 ```bash
 source backend_env/bin/activate
 ```
+For Windows users:
+You first need to allow running custom scripts in shell:
+```bash
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+To start virtual enviroment Windows users need to run the folowing:
+```bash
+.\backend_env\Scripts\activate
+```
+
+Run the app
+```python
+python app.py
+```
 
 install the libraries. Need to be done only once unless there has been additional dependencies.
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 update the libraries if there are additional dependencies

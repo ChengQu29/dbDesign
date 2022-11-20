@@ -42,6 +42,32 @@ class Household(Resource):
 api.add_resource(Household, '/household/<email>')
 
 
+class HouseholdForm(Resource):
+    @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['POST', 'OPTIONS'])
+    def post(self):
+        '''
+        api request example: 
+        curl --location --request GET '127.0.0.1:5000/household'
+
+        Insert household information
+        return: Code 201: If insertion succeeded
+                Code 500: internal server error
+        '''
+        body = request.json
+        try:
+            db.cursor.execute('''INSERT INTO HouseHold (email, square_footage, occupant, bedroom, home_type, FK_HouseHold_postal_code_PostalCode_postal_code) VALUES (%s, %s, %s, %s, %s, %s)''',
+                (body['email'], body['square_footage'], body['occupant'], body['bedroom'], body['home_type'], body['postal_code']))
+            if body.get('area_code', None):
+                db.cursor.execute('''INSERT INTO PhoneNumber (area_code, number, phone_type, FK_PhoneNumber_email_HouseHold_email) VALUES (%s, %s, %s, %s)''',
+                    (body['area_code'], body['number'], body['phone_type'], body['email']))
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(HouseholdForm, '/household_submission')
+
 
 
 class PostalCode(Resource):
@@ -70,6 +96,30 @@ class PostalCode(Resource):
         except Exception as e:
             return(f'Server side error: {e}', 500)
 api.add_resource(PostalCode, '/postal_code/<postal_code>')
+
+
+class PhoneNumber(Resource):
+    def get(self, area_code:str, number:str):
+        '''
+        api request example: 
+        curl --location --request GET '127.0.0.1:5000/phone_number/905/9224143'
+
+        query the PhoneNumber table for the postal information
+        return: Code 200: False if it has not existed. True otherwise
+                Code 500: internal server error
+        '''       
+        try:
+            db.cursor.execute('''SELECT area_code, number
+            FROM PhoneNumber WHERE
+            PhoneNumber.area_code = %s AND PhoneNumber.number = %s''', (area_code, number))
+            res = db.cursor.fetchall()
+            print(res)
+            if res:
+                return({'existed': True}, 200)
+            return({'existed': False}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+api.add_resource(PhoneNumber, '/phone_number/<area_code>/<number>')
 
 
 class Top25Manfufacturers(Resource):

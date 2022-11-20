@@ -10,6 +10,9 @@ import ReportOverview from "./components/ReportOverview";
 import ReportManuModelSrch from "./components/ReportManuModelSrch";
 import ReportLaundryCnt from "./components/ReportLaundryCnt";
 import Top25Manufacturers from "./components/Top25Manufacturers"
+import AverageTVdisplaysizebystate from "./components/AverageTVdisplaysizebystate";
+import ExtraFridgeFreezerReport from "./components/ExtraFridgeFreezerReport";
+import BathroomStatistics from "./components/BathroomStatistics";
 import SucceedPage from "./components/SucceedPage";
 import ApplianceList from "./components/ApplianceList";
 import ApplianceForm from "./components/ApplianceForm";
@@ -58,6 +61,18 @@ const router = createBrowserRouter([
     {
         path: "/reports/top25manufacturers",
         element: <Top25Manufacturers />,
+    },    
+	{
+        path: "/reports/AverageTVdisplaysizebystate",
+        element: <AverageTVdisplaysizebystate />,
+    },	
+	{
+        path: "/reports/ExtraFridgeFreezerReport",
+        element: <ExtraFridgeFreezerReport />,
+    },	
+	{
+        path: "/reports/BathroomStatistics",
+        element: <BathroomStatistics />,
     },
     {
         path: "/succeed",

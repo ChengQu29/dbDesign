@@ -4,30 +4,21 @@ import Button from "react-bootstrap/Button";
 import { Form as ReactFinalForm, Field } from "react-final-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { updateEmail } from "../Slices/householdSlice";
-
-// TODO: Remove fake remote email validation promise
-const fakeRemoteValidationPromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve([]);
-    }, 300);
-});
+import { updateEmail, fetchEmail } from "../Slices/householdSlice";
 
 const EmailForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const onSubmit = async form => {
-        // TODO: Remove fake remote email validation
         try {
-            const email = await fakeRemoteValidationPromise;
-            if(email.length > 0) {
+            const fulfilledAction = await dispatch(fetchEmail(form.email));
+            if(fulfilledAction.payload.existed) {
                 return { email: "Email already exists" };
             }
         } catch(error) {
             return { email: "Something is wrong" };
         }
-        console.log("Success");
-        console.log(`Form content ${ form.email }`);
+        console.log("Email form content:", form);
         dispatch(updateEmail({ email: form.email }));
         navigate("/household/postalCode");
     };
