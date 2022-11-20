@@ -42,6 +42,32 @@ class Household(Resource):
 api.add_resource(Household, '/household/<email>')
 
 
+class HouseholdForm(Resource):
+    @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['POST', 'OPTIONS'])
+    def post(self):
+        '''
+        api request example: 
+        curl --location --request GET '127.0.0.1:5000/household'
+
+        Insert household information
+        return: Code 201: If insertion succeeded
+                Code 500: internal server error
+        '''
+        body = request.json
+        try:
+            db.cursor.execute('''INSERT INTO HouseHold (email, square_footage, occupant, bedroom, home_type, FK_HouseHold_postal_code_PostalCode_postal_code) VALUES (%s, %s, %s, %s, %s, %s)''',
+                (body['email'], body['square_footage'], body['occupant'], body['bedroom'], body['home_type'], body['postal_code']))
+            if body.get('area_code', None):
+                db.cursor.execute('''INSERT INTO PhoneNumber (area_code, number, phone_type, FK_PhoneNumber_email_HouseHold_email) VALUES (%s, %s, %s, %s)''',
+                    (body['area_code'], body['number'], body['phone_type'], body['email']))
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(HouseholdForm, '/household_submission')
+
 
 
 class PostalCode(Resource):
@@ -78,7 +104,7 @@ class PhoneNumber(Resource):
         api request example: 
         curl --location --request GET '127.0.0.1:5000/phone_number/905/9224143'
 
-        query the PostalCode table for the postal information
+        query the PhoneNumber table for the postal information
         return: Code 200: False if it has not existed. True otherwise
                 Code 500: internal server error
         '''       
@@ -136,6 +162,66 @@ class ManufacturerDrillDown(Resource):
 api.add_resource(ManufacturerDrillDown, '/reports/manufacturer_drill_down/<manufacturer>')
 
 
+class LaundryCnt_WasherDryer(Resource):
+    def get(self):
+        try:
+            db.cursor.execute('''
+            WITH WasherFrequencyPerState AS (SELECT w.loading_type, COUNT(w.loading_type) as frequency, p.state FROM Washer w
+                JOIN HouseHold h ON w.FK_Washer_email_HouseHold_email = h.email
+                JOIN PostalCode p ON h.FK_HouseHold_postal_code_PostalCode_postal_code = p.postal_code
+            GROUP BY w.loading_type, p.state ORDER BY p.state, frequency DESC)
+            ,
+            WasherHighestFrequencyPerState AS (SELECT MAX(w.frequency) AS highest_frequency, w.state FROM WasherFrequencyPerState w GROUP BY w.state),
+            WasherTopPerState AS (SELECT wfps.loading_type, wfps.frequency, wfps.state FROM WasherFrequencyPerState wfps JOIN WasherHighestFrequencyPerState whfps ON whfps.state = wfps.state WHERE whfps.highest_frequency = wfps.frequency),
+            DryerFrequencyPerState AS (SELECT d.heat_source, COUNT(d.heat_source) as frequency, p.state FROM Dryer d
+                JOIN HouseHold h ON d.FK_Dryer_email_HouseHold_email = h.email
+                JOIN PostalCode p ON h.FK_HouseHold_postal_code_PostalCode_postal_code = p.postal_code
+            GROUP BY d.heat_source, p.state ORDER BY p.state, frequency DESC)
+            ,
+            DryerHighestFrequencyPerState AS (SELECT MAX(d.frequency) AS highest_frequency, d.state FROM DryerFrequencyPerState d GROUP BY d.state),
+            DryerTopPerState AS (SELECT dfps.heat_source, dfps.frequency, dfps.state FROM DryerFrequencyPerState dfps JOIN DryerHighestFrequencyPerState dhfps ON dhfps.state = dfps.state WHERE dhfps.highest_frequency = dfps.frequency)
+            SELECT DISTINCT(p.state), wtps.loading_type, dtps.heat_source FROM PostalCode p
+            LEFT JOIN WasherTopPerState wtps
+            ON p.state = wtps.state
+            LEFT JOIN DryerTopPerState dtps
+            ON p.state = dtps.state
+            ORDER BY p.state; ''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+api.add_resource(LaundryCnt_WasherDryer, '/reports/LaundryCnt_WasherDryer')
+
+class LaundryCnt_WasherNoDryer(Resource):
+    def get(self):
+        try:
+            db.cursor.execute('''
+            WITH WasherPerHouseHold AS (SELECT COUNT(h.email) as washer_count_per_household, h.email, p.state FROM HouseHold h
+                JOIN PostalCode p ON h.FK_HouseHold_postal_code_PostalCode_postal_code = p.postal_code
+                RIGHT JOIN Washer w ON w.FK_Washer_email_HouseHold_email = h.email
+            GROUP BY h.email)
+            ,
+            DryerPerHouseHold AS (SELECT COUNT(h.email) as dryer_count_per_household, h.email, p.state FROM HouseHold h
+                JOIN PostalCode p ON h.FK_HouseHold_postal_code_PostalCode_postal_code = p.postal_code
+                RIGHT JOIN Dryer d ON d.FK_Dryer_email_HouseHold_email = h.email
+            GROUP BY h.email)
+            ,
+            WasherDryerPerHouseHold AS (SELECT h.email, wph.washer_count_per_household, dph.dryer_count_per_household, p.state FROM HouseHold h
+                JOIN PostalCode p ON p.postal_code = h.FK_HouseHold_postal_code_PostalCode_postal_code
+                LEFT JOIN WasherPerHouseHold wph ON h.email = wph.email
+                LEFT JOIN DryerPerHouseHold dph ON h.email = dph.email)
+            SELECT wdph.state, COUNT(wdph.email) count_househould_with_washer_no_dryer
+            FROM WasherDryerPerHouseHold wdph
+            WHERE wdph.dryer_count_per_household IS NULL AND wdph.washer_count_per_household IS NOT NULL
+            GROUP BY wdph.state
+            ORDER BY count_househould_with_washer_no_dryer AND wdph.state; ''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+api.add_resource(LaundryCnt_WasherNoDryer, '/reports/LaundryCnt_WasherNoDryer')
 
 if __name__ == '__main__':
     try:

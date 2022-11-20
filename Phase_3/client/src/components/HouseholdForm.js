@@ -2,17 +2,22 @@ import { Row } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Form as ReactFinalForm, Field } from "react-final-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { updateHousehold } from "../Slices/householdSlice";
+import { updateHousehold, submitHouseHoldForm } from "../Slices/householdSlice";
 
 const HouseholdForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const householdState = useSelector(state => state.household);
     const onSubmit = async form => {
-        // TODO: We will submit the household information together here
-        console.log("Success");
-        console.log({...form,  homeType: form.homeType ? form.homeType : "House"});
+        console.log("household form content: ", {...form,  homeType: form.homeType ? form.homeType : "House"});
+        try {
+            const fulfilledAction = await dispatch(submitHouseHoldForm({...householdState, ...form, homeType: form.homeType ? form.homeType : "House"}));
+            console.log(fulfilledAction);
+        } catch(error) {
+            return { email: "Something is wrong" };
+        }
         dispatch(updateHousehold({ ...form, homeType: form.homeType ? form.homeType : "House"}));
         navigate("/bathrooms");
     };
