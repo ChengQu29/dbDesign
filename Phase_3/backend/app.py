@@ -223,6 +223,54 @@ class LaundryCnt_WasherNoDryer(Resource):
             return(f'Server side error: {e}', 500)
 api.add_resource(LaundryCnt_WasherNoDryer, '/reports/LaundryCnt_WasherNoDryer')
 
+class AverageTVdisplaysizebystate(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT state, FORMAT(AVG(display_size), '2.#') AS Average_size FROM
+            (select state, postal_code, email, display_size from PostalCode join HouseHold ON postal_code=HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code
+            join TV ON HouseHold.email = TV.FK_tv_email_HouseHold_email)  ALL_TV_IN_STATE
+            group by state
+            ORDER BY STATE ASC''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(AverageTVdisplaysizebystate, '/reports/AverageTVdisplaysizebystate')
+
+class tvDrillDown(Resource):
+    def get(self, state):
+        try:
+            db.cursor.execute('''
+            WITH x1 AS (
+            SELECT state, AVG(display_size) AS Average_size FROM
+            (select state, postal_code, email, display_size from PostalCode
+            join HouseHold
+            ON postal_code = HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code
+            join TV
+            ON HouseHold.email = TV.FK_tv_email_HouseHold_email) ALL_TV_IN_STATE
+            GROUP BY state
+            ORDER BY state ASC),
+            x2 AS (
+            SELECT state, display_type, maximum_resolution from PostalCode
+            JOIN HouseHold
+            ON postal_code = HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code
+            JOIN TV
+            ON HouseHold.email = TV.FK_tv_email_HouseHold_email)
+            select x1.state, display_type AS screen_type, maximum_resolution, FORMAT(Average_size, '2.#') AS Average_size from x1
+            JOIN
+            x2
+            WHERE x1.state = %s
+			''', (state,))
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+api.add_resource(tvDrillDown, '/reports/AverageTVdisplaysizebystateDrilldown/<state>')
+
 if __name__ == '__main__':
     try:
         app.run(debug = True)
