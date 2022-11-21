@@ -15,7 +15,7 @@ const Top25Manufacturers = () => {
         const fetchData = async () => {
             const url = 'http://127.0.0.1:5000/reports/top25manufacturers'
             const res = await axios.get(`${url}`)
-            // console.log(res.data['result'])
+            console.log(res.data['result'])
             setTop25(res.data['result'])
         }
         fetchData()

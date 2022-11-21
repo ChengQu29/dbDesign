@@ -16,6 +16,8 @@ import BathroomStatistics from "./components/BathroomStatistics";
 import SucceedPage from "./components/SucceedPage";
 import ApplianceList from "./components/ApplianceList";
 import ApplianceForm from "./components/ApplianceForm";
+import HouseHoldAvgByRadiusInputForm from "./components/HouseHoldAvgByRadiusInputForm";
+import HouseHoldAvgByRadiusReport from "./components/HouseHoldAvgByRadiusReport";
 
 const router = createBrowserRouter([
     {
@@ -85,6 +87,14 @@ const router = createBrowserRouter([
     {
         path: "/appliance/form",
         element: <ApplianceForm />,
+    },
+    {
+        path: "/reports/HouseHoldAvgByRadiusInput",
+        element: <HouseHoldAvgByRadiusInputForm />
+    },
+    {
+        path: "/reports/HouseHoldAvgByRadiusReport",
+        element: <HouseHoldAvgByRadiusReport />,
     },
 ]);
 

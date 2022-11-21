@@ -9,9 +9,10 @@ const ApplianceList = () => {
     const navigate = useNavigate();
     const appliances = useSelector(state => state.appliance.appliances);
     const email = useSelector(state => state.household.email);
+    console.log(appliances);
 
     const handleSubmit = async form => {
-        // TODO: use the `appliances` variable and submit all appliances to the middleware
+        // TODO: use the `appliances` variable and the `email` variable to submit all appliances to the middleware
         console.log("Success");
         console.log(email);
         console.log(appliances);
@@ -36,9 +37,9 @@ const ApplianceList = () => {
                         return (
                             <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td>{appliance.type}</td>
-                                <td>{appliance.manufacture}</td>
-                                <td>{appliance.model? appliance.model : null}</td>
+                                <td>{appliance.applianceType}</td>
+                                <td>{appliance.manufacturer}</td>
+                                <td>{appliance.modelName? appliance.modelName : null}</td>
                             </tr>
                         );
                     })}
