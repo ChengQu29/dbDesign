@@ -41,6 +41,117 @@ class Household(Resource):
         pass
 api.add_resource(Household, '/household/<email>')
 
+class CookerForm(Resource):
+    def post(self, email, modelName, manufacturer):
+        try:
+            db.cursor.execute(
+                '''
+                INSERT INTO Cooker (FK_Cooker_email_HouseHold_email, model_name, name)
+                VALUES (%s, %s, %s);
+                ''', (email, modelName, manufacturer)
+            )
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+api.add_resource(CookerForm, '/insertCooker/<email>/<modelName>/<manufacturer>')
+
+class OvenForm(Resource):
+    def post(self, cookerId, email, has_gas, has_electric, has_microwave, oven_type):
+        try:
+            db.cursor.execute(
+                '''
+                INSERT INTO Oven (FK_Oven_id_Cooker_cooker_id, FK_Cooker_email_HouseHold_email, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source, oven_type)
+                VALUES (%s, %s, %s, %s, %s, %s);
+                ''', (cookerId, email, has_gas, has_electric, has_microwave, oven_type)
+            )
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+api.add_resource(OvenForm, '/insertOven/<cookerId>/<email>/<has_gas>/<has_electric>/<has_microwave>/<oven_type>')
+
+class CooktopForm(Resource):
+    def post(self, cookerId, email, heat_source):
+        try:
+            db.cursor.execute(
+                '''
+                INSERT INTO Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_Cooker_email_HouseHold_email, heat_source)
+                VALUES (%s, %s, %s);
+                ''', (cookerId, email, heat_source)
+            )
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+api.add_resource(CooktopForm, '/insertCooktop/<cookerId>/<email>/<heat_source>')
+
+class TvForm(Resource):
+    def post(self, email, manufacturer_name, model_name, display_type, display_size, maximum_resolution):
+        try:
+            db.cursor.execute(
+                '''
+                INSERT INTO TV (FK_tv_email_HouseHold_email, name, model_name, display_type, display_size, maximum_resolution)
+                VALUES (%s, %s, %s, %s, %s, %s);
+                ''', (email, manufacturer_name, model_name, display_type, display_size, maximum_resolution)
+            )
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+api.add_resource(TvForm, '/insertTv/<email>/<manufacturer_name>/<model_name>/<display_type>/<display_size>/<maximum_resolution>')
+
+class WasherForm(Resource):
+    def post(self, email, manufacturer_name, model_name, loading_type):
+        try:
+            db.cursor.execute(
+                '''
+                INSERT INTO Washer (FK_Washer_email_HouseHold_email, name, model_name, loading_type)
+                VALUES (%s, %s, %s, %s);
+                ''', (email, manufacturer_name, model_name, loading_type)
+            )
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+api.add_resource(WasherForm, '/insertWasher/<email>/<manufacturer_name>/<model_name>/<loading_type>')
+
+class DryerForm(Resource):
+    def post(self, email, manufacturer_name, model_name, heat_source):
+        try:
+            db.cursor.execute(
+                '''
+                INSERT INTO Dryer (FK_Dryer_email_HouseHold_email, name, model_name, loading_type)
+                VALUES (%s, %s, %s, %s);
+                ''', (email, manufacturer_name, model_name, heat_source)
+            )
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+api.add_resource(DryerForm, '/insertDryer/<email>/<manufacturer_name>/<model_name>/<heat_source>')
+
+class FreezerForm(Resource):
+    def post(self, email, manufacturer_name, model_name, model_type):
+        try:
+            db.cursor.execute(
+                '''
+                INSERT INTO Freezer (FK_Freezer_email_HouseHold_email, name, model_name, model_type)
+                VALUES (%s, %s, %s, %s);
+                ''', (email, manufacturer_name, model_name, model_type)
+            )
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+api.add_resource(FreezerForm, '/insertFreezer/<email>/<manufacturer_name>/<model_name>/<model_type>')
 
 class HouseholdForm(Resource):
     @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['POST', 'OPTIONS'])
@@ -69,6 +180,7 @@ class HouseholdForm(Resource):
 api.add_resource(HouseholdForm, '/household_submission')
 
 class HouseHoldAvgByRadius(Resource):
+    @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['GET', 'OPTIONS'])
     def get(self, lon, lat, radius):
         try:
             db.cursor.execute('''
@@ -453,7 +565,6 @@ class ExtraFridgeFreezerReport2(Resource):
             return({'result': res}, 200)
         except Exception as e:
             return(f'Server side error: {e}', 500)
-
 api.add_resource(ExtraFridgeFreezerReport2, '/reports/ExtraFridgeFreezerReport2')
 
 
