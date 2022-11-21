@@ -457,6 +457,265 @@ class ExtraFridgeFreezerReport2(Resource):
 api.add_resource(ExtraFridgeFreezerReport2, '/reports/ExtraFridgeFreezerReport2')
 
 
+
+class BathroomStatistics1(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT 
+            FORMAT(MIN(Cnt), '0.#') AS min_bath_perhousehold, 
+            FORMAT(AVG(Cnt), '1.#') AS avg_bath_perhousehold, 
+            FORMAT(MAX(Cnt), '0.#') AS max_bath_perhousehold 
+            FROM (SELECT FK_Half_email_HouseHold_email, Count(*) as 'Cnt' FROM (SELECT number, FK_Half_email_HouseHold_email FROM Half UNION ALL
+            SELECT number, FK_Full_email_HouseHold_email FROM Full) Bathrooms
+            GROUP BY FK_Half_email_HouseHold_email) Bathrooms_cnt
+            -- The minimum (as an integer), average (as a decimal number rounded
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomStatistics1, '/reports/BathroomStatistics1')
+
+
+
+class BathroomStatistics2(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT 
+            FORMAT(MIN(Cnt), '0.#') AS min_halfbath_perhousehold, 
+            FORMAT(AVG(Cnt), '1.#') AS avg_halfbath_perhousehold, 
+            FORMAT(MAX(Cnt), '0.#') AS max_halfbath_perhousehold FROM 
+            (SELECT FK_Half_email_HouseHold_email, Count(*) as 'Cnt' FROM (SELECT number, FK_Half_email_HouseHold_email FROM Half ) Bathrooms
+            GROUP BY FK_Half_email_HouseHold_email) Bathrooms_cnt
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomStatistics2, '/reports/BathroomStatistics2')
+
+
+
+class BathroomStatistics3(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT 
+            FORMAT(MIN(Cnt), '0.#') AS min_fullbath_perhousehold, 
+            FORMAT(AVG(Cnt), '1.#') AS avg_fullbath_perhousehold, 
+            FORMAT(MAX(Cnt), '0.#') AS max_fullbath_perhousehold FROM 
+            (SELECT FK_Full_email_HouseHold_email, Count(*) as 'Cnt' FROM (SELECT number, FK_Full_email_HouseHold_email FROM Full ) Bathrooms
+            GROUP BY FK_Full_email_HouseHold_email) Bathrooms_cnt
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomStatistics3, '/reports/BathroomStatistics3')
+
+
+
+class BathroomStatistics4(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT 
+            FORMAT(MIN(commode_count), '0.#') AS min_commode_perhousehold, 
+            FORMAT(AVG(commode_count), '1.#') AS avg_commode_perhousehold, 
+            FORMAT(MAX(commode_count), '0.#') AS max_commode_perhousehold 
+            FROM (SELECT FK_Half_email_HouseHold_email, Sum(commode) as 'commode_count' FROM (SELECT number, FK_Half_email_HouseHold_email, commode FROM Half UNION ALL
+            SELECT number, FK_Full_email_HouseHold_email, commode FROM Full) Bathrooms
+            GROUP BY FK_Half_email_HouseHold_email) commodes_cnt
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomStatistics4, '/reports/BathroomStatistics4')
+
+
+
+class BathroomStatistics5(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT 
+            FORMAT(MIN(sink_count), '0.#') AS min_sink_perhousehold, 
+            FORMAT(AVG(sink_count), '1.#') AS avg_sink_perhousehold, 
+            FORMAT(MAX(sink_count), '0.#') AS max_sink_perhousehold 
+            FROM (SELECT FK_Half_email_HouseHold_email, Sum(sink) as 'sink_count' FROM (SELECT number, FK_Half_email_HouseHold_email, sink FROM Half UNION ALL
+            SELECT number, FK_Full_email_HouseHold_email, sink FROM Full) Bathrooms
+            GROUP BY FK_Half_email_HouseHold_email) sink_cnt
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomStatistics5, '/reports/BathroomStatistics5')
+
+
+
+class BathroomStatistics6(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT 
+            FORMAT(MIN(bidet_count), '0.#') AS min_bidet_perhousehold, 
+            FORMAT(AVG(bidet_count), '1.#') AS avg_bidet_perhousehold, 
+            FORMAT(MAX(bidet_count), '0.#') AS max_bidet_perhousehold 
+            FROM (SELECT FK_Half_email_HouseHold_email, Sum(bidet) as 'bidet_count' FROM (SELECT number, FK_Half_email_HouseHold_email, bidet FROM Half UNION ALL
+            SELECT number, FK_Full_email_HouseHold_email, bidet FROM Full) Bathrooms
+            GROUP BY FK_Half_email_HouseHold_email) bidet_cnt
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomStatistics6, '/reports/BathroomStatistics6')
+
+
+
+class BathroomStatistics7(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT 
+            FORMAT(MIN(bathtub_count), '0.#') AS min_bathtub_perhousehold, 
+            FORMAT(AVG(bathtub_count), '1.#') AS avg_bathtub_perhousehold, 
+            FORMAT(MAX(bathtub_count), '0.#') AS max_bathtub_perhousehold 
+            FROM (SELECT FK_Full_email_HouseHold_email, Sum(bathtub) as 'bathtub_count' FROM (
+            SELECT number, FK_Full_email_HouseHold_email, bathtub FROM Full) Bathrooms
+            GROUP BY FK_Full_email_HouseHold_email) bathtub_cnt
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomStatistics7, '/reports/BathroomStatistics7')
+
+
+
+class BathroomStatistics8(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT 
+            FORMAT(MIN(shower_count), '0.#') AS min_shower_perhousehold, 
+            FORMAT(AVG(shower_count), '1.#') AS avg_shower_perhousehold, 
+            FORMAT(MAX(shower_count), '0.#') AS max_shower_perhousehold 
+            FROM (SELECT FK_Full_email_HouseHold_email, Sum(shower) as 'shower_count' FROM (
+            SELECT number, FK_Full_email_HouseHold_email, shower FROM Full) Bathrooms
+            GROUP BY FK_Full_email_HouseHold_email) shower_cnt
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomStatistics8, '/reports/BathroomStatistics8')
+
+
+
+class BathroomStatistics9(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            SELECT 
+            FORMAT(MIN(tub_shower_count), '0.#') AS min_tub_shower_perhousehold, 
+            FORMAT(AVG(tub_shower_count), '1.#') AS avg_tub_shower_perhousehold, 
+            FORMAT(MAX(tub_shower_count), '0.#') AS max_tub_shower_perhousehold 
+            FROM (SELECT FK_Full_email_HouseHold_email, Sum(tub_shower) as 'tub_shower_count' FROM (
+            SELECT number, FK_Full_email_HouseHold_email, tub_shower FROM Full) Bathrooms
+            GROUP BY FK_Full_email_HouseHold_email) tub_shower_cnt
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomStatistics9, '/reports/BathroomStatistics9')
+
+
+class MostBidetsState(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            (SELECT state as 'state_with_most_bidets', 
+            FORMAT(SUM(bidet), '0.#') as 'bidet_count' FROM ((SELECT PostalCode.state AS 'state' , HouseHold.email, Full.bidet FROM PostalCode
+            JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
+            JOIN Full ON HouseHold.email=Full.FK_Full_email_HouseHold_email) UNION ALL
+            (SELECT PostalCode.state, HouseHold.email, Half.bidet FROM PostalCode
+            JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
+            JOIN Half ON HouseHold.email=Half.FK_Half_email_HouseHold_email)) state_bidets
+            GROUP BY state) ORDER BY `bidet_count` desc LIMIT 1;
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(MostBidetsState, '/reports/MostBidetsState')
+
+
+class MostBidetsPostal(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            (SELECT postal_code as 'postal_with_most_bidets', 
+            FORMAT(SUM(bidet), '0.#') as 'bidet_count' 
+            FROM ((SELECT PostalCode.postal_code AS 'postal_code' , HouseHold.email, Full.bidet FROM PostalCode
+            JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
+            JOIN Full ON HouseHold.email=Full.FK_Full_email_HouseHold_email) UNION ALL
+            (SELECT PostalCode.postal_code, HouseHold.email, Half.bidet FROM PostalCode
+            JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
+            JOIN Half ON HouseHold.email=Half.FK_Half_email_HouseHold_email)) state_bidets
+            GROUP BY postal_code) ORDER BY `bidet_count` desc LIMIT 1;
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(MostBidetsPostal, '/reports/MostBidetsPostal')
+
+class PrimaryBathHouseholds(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''
+            (SELECT COUNT(*) as 'single_bath_household_cnt' FROM (SELECT FK_Full_email_HouseHold_email, Count(*) as 'Cnt' FROM (SELECT number, FK_Full_email_HouseHold_email FROM Full UNION ALL
+            SELECT number, FK_Half_email_HouseHold_email FROM Half) Bathrooms WHERE EXISTS (SELECT * FROM Full WHERE
+            (Full.FK_Full_email_HouseHold_email=Bathrooms.FK_Full_email_HouseHold_email AND Full.is_primary=1))
+            GROUP BY FK_Full_email_HouseHold_email HAVING Cnt=1) single_bath_counts)
+			''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(PrimaryBathHouseholds, '/reports/PrimaryBathHouseholds')
+
+
 if __name__ == '__main__':
     try:
         app.run(debug = True)
