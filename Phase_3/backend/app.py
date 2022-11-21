@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api
 from flask_cors import CORS, cross_origin
 from db import DB
-import simplejson as json
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -239,7 +239,7 @@ class HouseHoldAvgByRadius(Resource):
             ''', (lat, lat, lon, lat, lat, lon, radius)           
             )
             res = db.cursor.fetchall()
-            return({'result': json.dumps(res)}, 200)
+            return({'result': res}, 200)
         except Exception as e:
             return(f'Server side error: {e}', 500)
 api.add_resource(HouseHoldAvgByRadius, '/reports/radiusReport/<lon>/<lat>/<radius>')

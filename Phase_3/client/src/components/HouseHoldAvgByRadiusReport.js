@@ -41,16 +41,15 @@ const HouseHoldAvgByRadiusReport = () => {
                 </thead>
                 <tbody>
                 {
-                radiusResult && radiusResult.map && radiusResult.map((subArray, idx) => {
+                radiusResult && radiusResult.map && radiusResult.map((row) => {
                     return(
-                        <tr key={idx}>
-                            {subArray.map((subitem) => {
-                                return (<tr>
-                                            <td>{subitem}</td>
-                                        </tr> 
-                                );
-                            })}
-                                
+                        <tr key={row[0]}>
+                            <td>{row[0]}</td>
+                            <td>{row[1]}</td>
+                            <td>{row[2]}</td>
+                            <td>{row[3]}</td>
+                            <td>{row[4]}</td>
+                            <td>{row[5]}</td>
                         </tr> 
                     )
                 }) }
