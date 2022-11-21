@@ -1,24 +1,17 @@
 import { useEffect } from "react";
-import { fetchRadisuReport, getRadiusReport } from "../Slices/radiusReportSlice";
 import { React, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Table from 'react-bootstrap/Table';
 import axios from 'axios';
 
 const HouseHoldAvgByRadiusReport = () => {
-    
     const [radiusResult, setRadiusResult] = useState({});
-
     const postalCodeInformationState = useSelector(state => state.household.postalCodeInformation);
-    const radiusReportState = useSelector(state => state.radiusReport);
+    const radiusState = useSelector(state => state.radius);
 
     useEffect(() => {
         const fetchData = async () => {
-            const radius = 1000 //hardcode for testing
-            //console.log("radius is: ", radiusReportState.radius) 
-            const res = await axios.get(`http://127.0.0.1:5000/reports/radiusReport/${postalCodeInformationState.lon}/${postalCodeInformationState.lat}/${radius}`)
-            
-            console.log(res.data['result'])
+            const res = await axios.get(`http://127.0.0.1:5000/reports/radiusReport/${postalCodeInformationState.lon}/${postalCodeInformationState.lat}/${radiusState.radius}`)
             setRadiusResult(res.data['result'])
         }
         fetchData()

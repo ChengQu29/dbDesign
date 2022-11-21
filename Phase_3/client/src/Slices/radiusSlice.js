@@ -7,21 +7,18 @@ export const fetchRadisuReport = createAsyncThunk('household/fetchRadiusReport',
     return response.data;
 });
 
-export const radiusReportSlice = createSlice({
-    name: 'radiusReport',
+export const radiusSlice = createSlice({
+    name: 'radius',
     initialState: {
         radius: null,
-        lon: null,
-        lat: null,
     },
     reducers: {
-        updateRadiusReport: (state, action) => {
+        updateRadius: (state, action) => {
+            console.log("payload is: ", action.payload)
             state.radius = action.payload.radius;
-            state.lon = action.payload.lon;
-            state.lat = action.payload.lat
         }
     }
 });
 
-export const { updateRadiusReport } = radiusReportSlice.actions;
-export default radiusReportSlice.reducer
+export const { updateRadius } = radiusSlice.actions;
+export default radiusSlice.reducer

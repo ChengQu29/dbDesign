@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchPostalCode = createAsyncThunk('household/fetchPostalCode', async (postalCode) => {
-    const response = await axios.get(`http://127.0.0.1:5000/postal_code/${postalCode}`)
+export const fetchPostalCode = createAsyncThunk('household/fetchPostalCode', async (payload) => {
+    console.log(payload)
+    const response = await axios.get(`http://127.0.0.1:5000/postal_code/${payload}`)
     return response.data;
 });
 

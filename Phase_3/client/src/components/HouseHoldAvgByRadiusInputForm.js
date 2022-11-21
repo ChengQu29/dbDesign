@@ -2,31 +2,26 @@ import { Row } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Form as ReactFinalForm, Field } from "react-final-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchPostalCode } from "../Slices/householdSlice";
-import { updateRadiusReport } from "../Slices/radiusReportSlice";
+import { updateRadius } from "../Slices/radiusSlice";
 
 const HouseHoldAvgByRadiusInputForm = () => {
-    const postalCodeInformationState = useSelector(state => state.household.postalCodeInformation);
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
     const onSubmit = async form => {
         try {
             const fulfilledAction = await dispatch(fetchPostalCode(form.postalCode));
-            console.log("PostalCode form content:", form);
             if(fulfilledAction.payload.result === "postal code not found") {
                 return { postalCode: "Postal Code cannot be found" };
             }
-            console.log("postalCodeInformationState: ", postalCodeInformationState)
-            console.log("radius input: ", form.radius)
-            dispatch(updateRadiusReport({ radius: form.radius, lon: postalCodeInformationState.lon, lat: postalCodeInformationState.lat, }))
-            
-            navigate("/reports/HouseHoldAvgByRadiusReport");
         } catch(error) {
             return { postalCode: "PostalCode Not Found" };
         }
+        dispatch(updateRadius({ radius: form.radius }));
+        navigate("/reports/HouseHoldAvgByRadiusReport");
     };
 
     const validateForm = values => {
