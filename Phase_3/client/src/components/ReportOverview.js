@@ -12,7 +12,8 @@ function ReportOverview() {
       <p><Link to="/reports/ExtraFridgeFreezerReport">Extra Fridge / Freezer Report </Link></p>  
       <p><Link to="/reports/laundryCenter">Laundry Center Report </Link></p>  
       <p><Link to="/reports/BathroomStatistics">Bathroom Statistics</Link></p>  
-      <p><Link to="">Household average by radius </Link></p>  
+      <p><Link to="/reports/HouseHoldAvgByRadiusInput">Household average by radius </Link></p>  
+      
     </Row>
   );
 }
