@@ -223,6 +223,32 @@ class LaundryCnt_WasherNoDryer(Resource):
             return(f'Server side error: {e}', 500)
 api.add_resource(LaundryCnt_WasherNoDryer, '/reports/LaundryCnt_WasherNoDryer')
 
+class ManuModelSearch(Resource):
+    def get(self,ManuModel):
+        print(ManuModel)
+        try:
+            db.cursor.execute('''
+            SELECT name AS manufacturer_name,type AS model_name
+            FROM (SELECT F.model_name AS type, F.name AS name FROM Freezer F
+                UNION
+                SELECT W.model_name AS type, W.name AS name From Washer W
+                UNION
+                SELECT D.model_name AS type, D.name AS name From Dryer D
+                UNION
+                SELECT T.model_name AS type, T.name AS name From TV T
+                UNION
+                SELECT C.model_name AS type, C.name AS name From Cooker C) As all_manufacturer
+            WHERE name LIKE CONCAT('%%', %s, '%%')  or type LIKE CONCAT('%%', %s, '%%') 
+            GROUP BY name, type
+            ORDER BY name ASC, type ASC;
+            ''', (ManuModel, ManuModel))
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+api.add_resource(ManuModelSearch, '/reports/ManuModelSearch/<ManuModel>')
+
 if __name__ == '__main__':
     try:
         app.run(debug = True)

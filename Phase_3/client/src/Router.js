@@ -7,7 +7,7 @@ import HouseholdForm from "./components/HouseholdForm";
 import BathroomList from "./components/BathroomList";
 import BathroomForm from "./components/BathroomForm";
 import ReportOverview from "./components/ReportOverview";
-import ReportManuModelSrch from "./components/ReportManuModelSrch";
+import ReportManuModelSearch from "./components/ReportManuModelSearch";
 import ReportLaundryCnt from "./components/ReportLaundryCnt";
 import Top25Manufacturers from "./components/Top25Manufacturers"
 import AverageTVdisplaysizebystate from "./components/AverageTVdisplaysizebystate";
@@ -52,7 +52,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/reports/ManuModelSearch",
-        element: <ReportManuModelSrch />,
+        element: <ReportManuModelSearch />,
     },
     {
         path: "/reports/laundryCenter",
