@@ -5,12 +5,14 @@ import Button from "react-bootstrap/Button";
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import { Form as ReactFinalForm, Field } from "react-final-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addBathroom } from "../Slices/bathroomSlice";
 
 const BathroomForm = () => {
     const [key, setKey] = useState('half');
+    const currentBathrooms = useSelector(state => state.bathrooms.bathrooms)
+    const hasPrimaryBathroom = currentBathrooms.findIndex(bathroom => bathroom.isPrimary) !== -1;
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const onSubmit = bathroomType => async form => {
@@ -21,58 +23,45 @@ const BathroomForm = () => {
     };
     const validateHalfForm = values => {
         const errors = {};
-        if (!values.sink) {
-            errors.sink = 'Required';
-        } else {
-            const sinkPattern = /^\d+$/;
-            if (!values.sink.match(sinkPattern)) {
-                errors.sink = 'Sink format is incorrect';
-            }
+        const sink = values.sink ? values.sink : "0";
+        const commode = values.commode ? values.commode : "0";
+        const bidet = values.bidet ? values.bidet : "0";
+        const numberPattern = /^[0-9]+$/;
+        if (!sink.match(numberPattern)) {
+            errors.sink = 'Sink format is incorrect';
         }
-        if (!values.commode) {
-            errors.commode = 'Required';
-        } else {
-            const commodePattern = /^\d+$/;
-            if (!values.commode.match(commodePattern)) {
-                errors.commode = 'Commode format is incorrect';
-            }
+        if (!commode.match(numberPattern)) {
+            errors.commode = 'Commode format is incorrect';
         }
-        if (!values.bidet) {
-            errors.bidet = 'Required';
-        } else {
-            const bidetPattern = /^\d+$/;
-            if (!values.bidet.match(bidetPattern)) {
-                errors.bidet = 'Bidet format is incorrect';
-            }
+        if (!bidet.match(numberPattern)) {
+            errors.bidet = 'Bidet format is incorrect';
+        }
+        if (parseInt(sink) + parseInt(commode) + parseInt(bidet) <= 0) {
+            errors.halfFormError = 'You should at least have one sink or one commode or one bidet'
         }
         return errors;
     };
     const validateFullForm = values => {
         const errors = validateHalfForm(values);
-        if (!values.bathtubs) {
-            errors.bathtubs = 'Required';
-        } else {
-            const bathtubsPattern = /^\d+$/;
-            if (!values.bathtubs.match(bathtubsPattern)) {
-                errors.bathtubs = 'Bathtubs format is incorrect';
+        if (values.isPrimary) {
+            const bathtub = values.bathtub ? values.bathtub : "0";
+            const shower = values.shower ? values.shower : "0";
+            const tubsShower = values.tubsShower ? values.tubsShower : "0";
+            const numberPattern = /^[0-9]+$/;
+            if (!bathtub.match(numberPattern)) {
+                errors.bathtub = 'Bathtub format is incorrect';
+            }
+            if (!shower.match(numberPattern)) {
+                errors.shower = 'Shower format is incorrect';
+            }
+            if (!tubsShower.match(numberPattern)) {
+                errors.tubsShower = 'Tubs/shower format is incorrect';
+            }
+            if (parseInt(bathtub) + parseInt(shower) + parseInt(tubsShower) <= 0) {
+                errors.fullFormError = 'Primary bathroom should at least have one bathtub or one shower or one tubs/shower'
             }
         }
-        if (!values.showers) {
-            errors.showers = 'Required';
-        } else {
-            const showersPattern = /^\d+$/;
-            if (!values.showers.match(showersPattern)) {
-                errors.showers = 'Showers format is incorrect';
-            }
-        }
-        if (!values.tubsShowers) {
-            errors.tubsShowers = 'Required';
-        } else {
-            const tubsShowersPattern = /^\d+$/;
-            if (!values.tubsShowers.match(tubsShowersPattern)) {
-                errors.tubsShowers = 'Tubs/Showers format is incorrect';
-            }
-        }
+        return errors;
     };
     return (
         <Row>
@@ -85,11 +74,20 @@ const BathroomForm = () => {
                         {props => (
                             <Form onSubmit={props.handleSubmit}>
                             <Row>
+                                <Field name="name">
+                                    {({input, meta}) => (
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Half bathroom name:</Form.Label>
+                                            <Form.Control placeholder="basement" {...input} />
+                                            {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
+                                        </Form.Group>
+                                    )}
+                                </Field>
                                 <Field name="sink">
                                     {({input, meta}) => (
                                         <Form.Group className="mb-3">
                                             <Form.Label>Sink:</Form.Label>
-                                            <Form.Control placeholder="2" {...input} />
+                                            <Form.Control placeholder="0" {...input} />
                                             {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                         </Form.Group>
                                     )}
@@ -98,7 +96,7 @@ const BathroomForm = () => {
                                     {({input, meta}) => (
                                         <Form.Group className="mb-3">
                                             <Form.Label>Commode:</Form.Label>
-                                            <Form.Control placeholder="1" {...input} />
+                                            <Form.Control placeholder="0" {...input} />
                                             {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                         </Form.Group>
                                     )}
@@ -107,9 +105,14 @@ const BathroomForm = () => {
                                     {({input, meta}) => (
                                         <Form.Group className="mb-3">
                                             <Form.Label>Bidet:</Form.Label>
-                                            <Form.Control placeholder="1" {...input} />
+                                            <Form.Control placeholder="0" {...input} />
                                             {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                         </Form.Group>
+                                    )}
+                                </Field>
+                                <Field name="halfFormError">
+                                    {({input, meta}) => (
+                                        (meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>
                                     )}
                                 </Field>
                                 <Button variant="primary" type="submit">
@@ -125,12 +128,13 @@ const BathroomForm = () => {
                         {props => (
                             <Form onSubmit={props.handleSubmit}>
                             <Row>
+                                <Row>
                                 <Col>
                                     <Field name="sink">
                                         {({input, meta}) => (
                                             <Form.Group className="mb-3">
                                                 <Form.Label>Sink:</Form.Label>
-                                                <Form.Control placeholder="2" {...input} />
+                                                <Form.Control placeholder="0" {...input} />
                                                 {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                             </Form.Group>
                                         )}
@@ -139,7 +143,7 @@ const BathroomForm = () => {
                                         {({input, meta}) => (
                                             <Form.Group className="mb-3">
                                                 <Form.Label>Commode:</Form.Label>
-                                                <Form.Control placeholder="1" {...input} />
+                                                <Form.Control placeholder="0" {...input} />
                                                 {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                             </Form.Group>
                                         )}
@@ -148,50 +152,63 @@ const BathroomForm = () => {
                                         {({input, meta}) => (
                                             <Form.Group className="mb-3">
                                                 <Form.Label>Bidet:</Form.Label>
-                                                <Form.Control placeholder="1" {...input} />
+                                                <Form.Control placeholder="0" {...input} />
                                                 {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                             </Form.Group>
                                         )}
                                     </Field>
-                                    <Field name="isPrimary">
-                                        {({input, meta}) => (
-                                            <Form.Check 
-                                                type="checkbox"
-                                                label="This bathroom is a primary bathroom"
-                                                {...input}
-                                            />
-                                        )}
-                                    </Field>
+                                    <label>
+                                        <Field
+                                            disabled={hasPrimaryBathroom}
+                                            name="isPrimary"
+                                            component="input"
+                                            type="checkbox"
+                                        />{' '}
+                                        isPrimary
+                                    </label>
                                 </Col>
                                 <Col>
-                                    <Field name="bathtubs">
+                                    <Field name="bathtub">
                                         {({input, meta}) => (
                                             <Form.Group className="mb-3">
-                                                <Form.Label>Bathtubs:</Form.Label>
+                                                <Form.Label>Bathtub:</Form.Label>
                                                 <Form.Control placeholder="0" {...input} />
                                                 {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                             </Form.Group>
                                         )}
                                     </Field>
-                                    <Field name="showers">
+                                    <Field name="shower">
                                         {({input, meta}) => (
                                             <Form.Group className="mb-3">
-                                                <Form.Label>Showers:</Form.Label>
+                                                <Form.Label>Shower:</Form.Label>
                                                 <Form.Control placeholder="0" {...input} />
                                                 {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                             </Form.Group>
                                         )}
                                     </Field>
-                                    <Field name="tubsShowers">
+                                    <Field name="tubsShower">
                                         {({input, meta}) => (
                                             <Form.Group className="mb-3">
-                                                <Form.Label>Tubs/showers</Form.Label>
+                                                <Form.Label>Tubs/shower</Form.Label>
                                                 <Form.Control placeholder="0" {...input} />
                                                 {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                             </Form.Group>
                                         )}
                                     </Field>
                                 </Col>
+                                </Row>
+                                <Row>
+                                    <Field name="halfFormError">
+                                        {({input, meta}) => (
+                                            (meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>
+                                        )}
+                                    </Field>
+                                    <Field name="fullFormError">
+                                        {({input, meta}) => (
+                                            (meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>
+                                        )}
+                                    </Field>
+                                </Row>
                                 <Button variant="primary" type="submit">
                                     Add
                                 </Button>
@@ -201,9 +218,6 @@ const BathroomForm = () => {
                     </ReactFinalForm>
                 </Tab>
             </Tabs>
-            
-            
-
         </Row>
     );
 }
