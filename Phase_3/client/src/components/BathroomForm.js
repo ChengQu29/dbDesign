@@ -29,12 +29,24 @@ const BathroomForm = () => {
         const numberPattern = /^[0-9]+$/;
         if (!sink.match(numberPattern)) {
             errors.sink = 'Sink format is incorrect';
+        } else {
+            if (parseInt(sink) > 2147483647) {
+                errors.sink = 'Sink count is out of range (2147483647)';
+            }
         }
         if (!commode.match(numberPattern)) {
             errors.commode = 'Commode format is incorrect';
+        } else {
+            if (parseInt(commode) > 2147483647) {
+                errors.commode = 'Commode count is out of range (2147483647)';
+            }
         }
         if (!bidet.match(numberPattern)) {
             errors.bidet = 'Bidet format is incorrect';
+        } else {
+            if (parseInt(bidet) > 2147483647) {
+                errors.bidet = 'Bidet count is out of range (2147483647)';
+            }
         }
         if (parseInt(sink) + parseInt(commode) + parseInt(bidet) <= 0) {
             errors.halfFormError = 'You should at least have one sink or one commode or one bidet'
@@ -60,6 +72,15 @@ const BathroomForm = () => {
             if (parseInt(bathtub) + parseInt(shower) + parseInt(tubsShower) <= 0) {
                 errors.fullFormError = 'Primary bathroom should at least have one bathtub or one shower or one tubs/shower'
             }
+        }
+        if (parseInt(values.bathtub ? values.bathtub : "0") > 2147483647) {
+            errors.bathtub = 'Bathtub count is out of range (2147483647)';
+        }
+        if (parseInt(values.shower ? values.shower : "0") > 2147483647) {
+            errors.shower = 'Shower count is out of range (2147483647)';
+        }
+        if (parseInt(values.tubsShower ? values.tubsShower : "0") > 2147483647) {
+            errors.tubsShower = 'Tubs/shower count is out of range (2147483647)';
         }
         return errors;
     };

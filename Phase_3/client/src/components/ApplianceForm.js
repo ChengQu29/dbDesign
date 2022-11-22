@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -6,15 +6,36 @@ import { Form as ReactFinalForm, Field } from "react-final-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addAppliance } from "../Slices/applianceSlice";
+import axios from "axios";
 
 const ApplianceForm = () => {
     const [applianceType, setApplianceType] = useState('freezer');
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [manufacturerList, setManufacturerList] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const url = 'http://127.0.0.1:5000/manufacturer_list'
+            const res = await axios.get(`${url}`)
+            console.log(res.data['result'])
+            setManufacturerList(res.data['result'])
+        }
+        fetchData()
+    }, [])
+
     const onSubmit = async form => {
         console.log("Success");
         console.log("Appliance form content:", form);
-        let consolidatedForm = {...form, manufacturer: form.manufacturer ? form.manufacturer : "ge", applianceType: applianceType ? applianceType : "freezer"};
+        console.log(manufacturerList);
+        let manufacturerResult = null;
+        if (form.manufacturer) {
+            manufacturerResult = form.manufacturer;
+        } else if (manufacturerList.length > 0) {
+            manufacturerResult = manufacturerList[0][0];
+        } else {
+            manufacturerResult = "";
+        }
+        let consolidatedForm = {...form, manufacturer: manufacturerResult, applianceType: applianceType ? applianceType : "freezer"};
         if (applianceType === 'freezer') {
             consolidatedForm = {...consolidatedForm, freezerType: form.freezerType ? form.freezerType : "bottomFreezerRefrigerator"};
         } else if (applianceType === 'tv') {
@@ -108,9 +129,9 @@ const ApplianceForm = () => {
                                     <Form.Group className="mb-3">
                                         <Form.Label>Manufacturer:</Form.Label>
                                         <Form.Select {...input}>
-                                            <option value="ge">GE</option>
-                                            <option value="lg">LG</option>
-                                            <option value="sumsung">Sumsung</option>
+                                            {
+                                                manufacturerList.map(manufacturer => {return (<option key={manufacturer[0]} value={manufacturer[0]}>{manufacturer[0]}</option>);})
+                                            }
                                         </Form.Select>
                                         {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                     </Form.Group>

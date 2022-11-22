@@ -28,7 +28,11 @@ const HouseholdForm = () => {
         } else {
             const squareFootagePattern = /^\d+$/;
             if (!values.squareFootage.match(squareFootagePattern)) {
-                errors.squareFootage = 'Square format is incorrect';
+                errors.squareFootage = 'Square footage format is incorrect';
+            } else {
+                if(parseInt(values.squareFootage) > 32767) {
+                    errors.squareFootage = 'Square footage is out of range (within 32767)';
+                }
             }
         }
         if (!values.occupants) {
@@ -37,6 +41,10 @@ const HouseholdForm = () => {
             const occupantsPattern = /^\d+$/;
             if (!values.occupants.match(occupantsPattern)) {
                 errors.occupants = 'Occupants format is incorrect';
+            } else {
+                if(parseInt(values.occupants) > 255) {
+                    errors.occupants = 'Occupants is out of range (within 255)';
+                }
             }
         }
         if (!values.bedrooms) {
@@ -45,6 +53,10 @@ const HouseholdForm = () => {
             const bedroomsPattern = /^\d+$/;
             if (!values.bedrooms.match(bedroomsPattern)) {
                 errors.bedrooms = 'Bedrooms format is incorrect';
+            } else {
+                if(parseInt(values.bedrooms) > 255) {
+                    errors.bedrooms = 'Bedrooms is out of range (within 255)';
+                }
             }
         }
         return errors;

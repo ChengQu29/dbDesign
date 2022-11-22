@@ -889,6 +889,20 @@ class PrimaryBathHouseholds(Resource):
 
 api.add_resource(PrimaryBathHouseholds, '/reports/PrimaryBathHouseholds')
 
+
+class ManufactureList(Resource):
+    def get (self):
+        try:
+            db.cursor.execute('''SELECT name FROM Manufacturer''')
+            res = db.cursor.fetchall()
+            print(res)
+            return({'result': res}, 200)
+        except Exception as e:
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(ManufactureList, '/manufacturer_list')
+
+
 if __name__ == '__main__':
     try:
         app.run(debug = True)
