@@ -1,20 +1,27 @@
 import { Row } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { submitBathroomForm } from "../Slices/bathroomSlice";
 
 const BathroomList = () => {
     const navigate = useNavigate();
     const bathrooms = useSelector(state => state.bathrooms.bathrooms);
     const email = useSelector(state => state.household.email);
+    const dispatch = useDispatch();
 
     const handleSubmit = async form => {
         // TODO: use the `bathrooms` variable and submit all bathrooms to the middleware
-        console.log("Success");
-        console.log(email);
-        console.log(bathrooms);
+        try {
+            const fulfilledAction = await dispatch(submitBathroomForm({email, bathrooms}));
+            console.log(fulfilledAction);
+        } catch(error) {
+            return { email: "Something is wrong" };
+        }
+        console.log("Bathroom submission success, email", email);
+        console.log("Bathroom submission success, bathrooms", bathrooms);
         navigate("/appliances");
     };
 

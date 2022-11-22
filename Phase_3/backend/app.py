@@ -158,7 +158,7 @@ class HouseholdForm(Resource):
     def post(self):
         '''
         api request example: 
-        curl --location --request GET '127.0.0.1:5000/household'
+        curl --location --request POST '127.0.0.1:5000/household_submission'
 
         Insert household information
         return: Code 201: If insertion succeeded
@@ -178,6 +178,44 @@ class HouseholdForm(Resource):
             return(f'Server side error: {e}', 500)
 
 api.add_resource(HouseholdForm, '/household_submission')
+
+
+class BathroomForm(Resource):
+    @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['POST', 'OPTIONS'])
+    def post(self):
+        '''
+        api request example: 
+        curl --location --request POST '127.0.0.1:5000/bathroom_submission'
+
+        Insert bathroom information
+        return: Code 201: If insertion succeeded
+                Code 500: internal server error
+        '''
+        body = request.json
+        email = body['email']
+        bathrooms = body['bathrooms']
+        try:
+            for index, bathroom in enumerate(bathrooms):
+                bidet = bathroom.get("bidet", 0)
+                commode = bathroom.get("commode", 0)
+                sink = bathroom.get("sink", 0)
+                if bathroom["bathroomType"] == "full":
+                    bathtub = bathroom.get("bathtub", 0)
+                    shower = bathroom.get("shower", 0)
+                    tubsShower = bathroom.get("tubsShower", 0)
+                    isPrimary = bathroom.get("isPrimary", False)
+                    db.cursor.execute('''INSERT INTO Full (number, sink, commode, bidet, is_primary, bathtub, shower, tub_shower, FK_Full_email_HouseHold_email) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''', (index + 1, sink, commode, bidet, "1" if isPrimary else "0", bathtub, shower, tubsShower, email))
+                else:
+                    name = bathroom.get("name", None)
+                    db.cursor.execute('''INSERT INTO Half (number, sink, commode, bidet, name, FK_Half_email_HouseHold_email) VALUES (%s, %s, %s, %s, %s, %s)''', (index + 1, sink, commode, bidet, name, email))
+            db.cnx.commit()
+            return({}, 201)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(BathroomForm, '/bathroom_submission')
+
 
 class HouseHoldAvgByRadius(Resource):
     @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['GET', 'OPTIONS'])
