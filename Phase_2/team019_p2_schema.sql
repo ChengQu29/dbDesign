@@ -93,7 +93,7 @@ CREATE TABLE Washer (
 CREATE TABLE Dryer (
 	dryer_id int NOT NULL AUTO_INCREMENT,
 	FK_Dryer_email_HouseHold_email varchar(240) NOT NULL,
-    Model_name VARCHAR(240) NOT NULL,
+    Model_name VARCHAR(240),
 	name VARCHAR(240) NOT NULL,
 	heat_source VARCHAR(240) NOT NULL,   
 	PRIMARY KEY (dryer_id, FK_Dryer_email_HouseHold_email),
@@ -104,7 +104,7 @@ CREATE TABLE Dryer (
 CREATE TABLE TV (
     tv_id int NOT NULL AUTO_INCREMENT,
     FK_tv_email_HouseHold_email varchar(240) NOT NULL,
-    model_name VARCHAR(240) NOT NULL,
+    model_name VARCHAR(240) ,
 	name VARCHAR(240) NOT NULL,
 	display_type VARCHAR(240) NOT NULL,
 	display_size FLOAT(21, 11) NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE TV (
 CREATE TABLE Cooker (
     cooker_id int NOT NULL AUTO_INCREMENT,
     FK_cooker_email_HouseHold_email varchar(240) NOT NULL,
-    model_name VARCHAR(240) NOT NULL,
+    model_name VARCHAR(240),
     name VARCHAR(240) NOT NULL,
     PRIMARY KEY (cooker_id, FK_cooker_email_HouseHold_email),
 	FOREIGN KEY (FK_cooker_email_HouseHold_email) REFERENCES HouseHold(email),
