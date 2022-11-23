@@ -62,7 +62,7 @@ class OvenForm(Resource):
         try:
             db.cursor.execute(
                 '''
-                INSERT INTO Oven (FK_Oven_id_Cooker_cooker_id, FK_Cooker_email_HouseHold_email, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source, oven_type)
+                INSERT INTO Oven (FK_Oven_id_Cooker_cooker_id, FK_oven_email_HouseHold_email, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source, oven_type)
                 VALUES (%s, %s, %s, %s, %s, %s);
                 ''', (cookerId, email, has_gas, has_electric, has_microwave, oven_type)
             )
@@ -78,7 +78,7 @@ class CooktopForm(Resource):
         try:
             db.cursor.execute(
                 '''
-                INSERT INTO Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_Cooker_email_HouseHold_email, heat_source)
+                INSERT INTO Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_cooktop_email_HouseHold_email, heat_source)
                 VALUES (%s, %s, %s);
                 ''', (cookerId, email, heat_source)
             )
@@ -89,69 +89,6 @@ class CooktopForm(Resource):
             return(f'Server side error: {e}', 500)
 api.add_resource(CooktopForm, '/insertCooktop/<cookerId>/<email>/<heat_source>')
 
-class TvForm(Resource):
-    def post(self, email, manufacturer_name, model_name, display_type, display_size, maximum_resolution):
-        try:
-            db.cursor.execute(
-                '''
-                INSERT INTO TV (FK_tv_email_HouseHold_email, name, model_name, display_type, display_size, maximum_resolution)
-                VALUES (%s, %s, %s, %s, %s, %s);
-                ''', (email, manufacturer_name, model_name, display_type, display_size, maximum_resolution)
-            )
-            db.cnx.commit()
-            return({}, 201)
-        except Exception as e:
-            print(e)
-            return(f'Server side error: {e}', 500)
-api.add_resource(TvForm, '/insertTv/<email>/<manufacturer_name>/<model_name>/<display_type>/<display_size>/<maximum_resolution>')
-
-class WasherForm(Resource):
-    def post(self, email, manufacturer_name, model_name, loading_type):
-        try:
-            db.cursor.execute(
-                '''
-                INSERT INTO Washer (FK_Washer_email_HouseHold_email, name, model_name, loading_type)
-                VALUES (%s, %s, %s, %s);
-                ''', (email, manufacturer_name, model_name, loading_type)
-            )
-            db.cnx.commit()
-            return({}, 201)
-        except Exception as e:
-            print(e)
-            return(f'Server side error: {e}', 500)
-api.add_resource(WasherForm, '/insertWasher/<email>/<manufacturer_name>/<model_name>/<loading_type>')
-
-class DryerForm(Resource):
-    def post(self, email, manufacturer_name, model_name, heat_source):
-        try:
-            db.cursor.execute(
-                '''
-                INSERT INTO Dryer (FK_Dryer_email_HouseHold_email, name, model_name, loading_type)
-                VALUES (%s, %s, %s, %s);
-                ''', (email, manufacturer_name, model_name, heat_source)
-            )
-            db.cnx.commit()
-            return({}, 201)
-        except Exception as e:
-            print(e)
-            return(f'Server side error: {e}', 500)
-api.add_resource(DryerForm, '/insertDryer/<email>/<manufacturer_name>/<model_name>/<heat_source>')
-
-class FreezerForm(Resource):
-    def post(self, email, manufacturer_name, model_name, model_type):
-        try:
-            db.cursor.execute(
-                '''
-                INSERT INTO Freezer (FK_Freezer_email_HouseHold_email, name, model_name, model_type)
-                VALUES (%s, %s, %s, %s);
-                ''', (email, manufacturer_name, model_name, model_type)
-            )
-            db.cnx.commit()
-            return({}, 201)
-        except Exception as e:
-            print(e)
-            return(f'Server side error: {e}', 500)
-api.add_resource(FreezerForm, '/insertFreezer/<email>/<manufacturer_name>/<model_name>/<model_type>')
 
 class HouseholdForm(Resource):
     @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['POST', 'OPTIONS'])
@@ -216,6 +153,92 @@ class BathroomForm(Resource):
 
 api.add_resource(BathroomForm, '/bathroom_submission')
 
+class ApplianceForm(Resource):
+    @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['POST', 'OPTIONS'])
+    def post(self):
+        body = request.json
+        email = body['email']
+        appliances = body['appliances']
+        print("appliances data before insertion into DB: ", appliances)
+        try:
+            for appliance in appliances:
+                print(appliance)
+                if appliance["applianceType"] == "freezer":
+                    manufacturer = appliance.get("manufacturer", None)
+                    modelName = appliance.get("modelName", None)
+                    freezerType = appliance.get("freezerType", None)
+                    db.cursor.execute('''
+                    INSERT INTO Freezer (FK_Freezer_email_HouseHold_email, Model_name, name, model_type)
+                    VALUES (%s, %s, %s, %s)
+                    ''', (email, modelName, manufacturer, freezerType))
+                elif appliance["applianceType"] == "washer":
+                    manufacturer = appliance.get("manufacturer", None)
+                    modelName = appliance.get("modelName", None)
+                    loadingType = appliance.get("loadingType", None)
+                    db.cursor.execute('''
+                    INSERT INTO Washer (FK_Washer_email_HouseHold_email, Model_name, name, loading_type)
+                    VALUES (%s, %s, %s, %s)
+                    ''', (email, modelName, manufacturer, loadingType))
+                elif appliance["applianceType"] == "dryer":
+                    manufacturer = appliance.get("manufacturer", None)
+                    modelName = appliance.get("modelName", None)
+                    dryerHeatSource = appliance.get("dryerHeatSource", None)
+                    db.cursor.execute('''
+                    INSERT INTO Dryer (FK_Dryer_email_HouseHold_email, Model_name, name, heat_source)
+                    VALUES (%s, %s, %s, %s)
+                    ''', (email, modelName, manufacturer, dryerHeatSource))
+                elif appliance["applianceType"] == "tv":
+                    manufacturer = appliance.get("manufacturer", None)
+                    modelName = appliance.get("modelName", None)
+                    displayType = appliance.get("displayType", None)
+                    displaySize = appliance.get("displaySize", None)
+                    maximumResolution = appliance.get("maximumResolution", None)
+                    db.cursor.execute('''
+                    INSERT INTO TV (FK_tv_email_HouseHold_email, model_name, name, display_type, display_size, maximum_resolution)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    ''', (email, modelName, manufacturer, displayType, displaySize, maximumResolution))
+                elif appliance["applianceType"] == "cooker":
+                    manufacturer = appliance.get("manufacturer", None)
+                    modelName = appliance.get("modelName", None)
+                    db.cursor.execute('''
+                    INSERT INTO Cooker (FK_Cooker_email_HouseHold_email, model_name, name)
+                    VALUES (%s, %s, %s)
+                    ''', (email, modelName, manufacturer))
+                    lastrow = db.cursor.lastrowid
+                    print(lastrow)
+                    
+                    if ("isOven" in appliance) and appliance["isOven"] == True:
+                        ovenHeatSources = appliance.get("ovenHeatSource")
+                        cookerType = appliance.get("cookerType")
+                        hasGasHeatSource = 0
+                        hasElectricHeatSource = 0
+                        hasMicroWaveHeatSource = 0
+                        for ovenHeatSource in ovenHeatSources:
+                            if ovenHeatSource == "gas":
+                                hasGasHeatSource = 1
+                            if ovenHeatSource == "electric":
+                                hasElectricHeatSource = 1
+                            if ovenHeatSource == "microwave":
+                                hasMicroWaveHeatSource = 1
+                        db.cursor.execute('''
+                        INSERT INTO Oven (FK_Oven_id_Cooker_cooker_id, FK_oven_email_HouseHold_email, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source, oven_type)
+                        VALUES (%s, %s, %s, %s, %s, %s)
+                        ''', (lastrow, email,  hasGasHeatSource, hasElectricHeatSource, hasMicroWaveHeatSource, cookerType))
+                    
+                    if ("isCooktop" in appliance) and appliance["isCooktop"] == True:
+                        cookTopHeatSource = appliance.get("cooktopHeatSource")
+                        db.cursor.execute('''
+                        INSERT INTO Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_cooktop_email_HouseHold_email, heat_source)
+                        VALUES (%s, %s, %s)
+                        ''', (lastrow, email, cookTopHeatSource))
+                        print("cookTopHeatSource is: ", cookTopHeatSource)
+            db.cnx.commit()
+            return({}, 200)
+        except Exception as e:
+            print(e)
+            return(f'Server side error: {e}', 500)
+
+api.add_resource(ApplianceForm, '/appliance_submission')
 
 class HouseHoldAvgByRadius(Resource):
     @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['GET', 'OPTIONS'])
