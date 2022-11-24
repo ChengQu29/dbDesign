@@ -70,6 +70,7 @@ CREATE TABLE Manufacturer (
 
 CREATE TABLE Freezer (
 	freezer_id int NOT NULL AUTO_INCREMENT,
+	appliance_number int NOT NULL,
 	FK_Freezer_email_HouseHold_email varchar(240) NOT NULL,
     model_name VARCHAR(240),
 	name VARCHAR(240) NOT NULL,
@@ -81,6 +82,7 @@ CREATE TABLE Freezer (
 
 CREATE TABLE Washer (
 	washer_id int NOT NULL AUTO_INCREMENT,
+	appliance_number int NOT NULL,
 	FK_Washer_email_HouseHold_email varchar(240) NOT NULL,
     model_name VARCHAR(240),
 	name VARCHAR(240) NOT NULL,
@@ -92,6 +94,7 @@ CREATE TABLE Washer (
 
 CREATE TABLE Dryer (
 	dryer_id int NOT NULL AUTO_INCREMENT,
+	appliance_number int NOT NULL,
 	FK_Dryer_email_HouseHold_email varchar(240) NOT NULL,
     Model_name VARCHAR(240),
 	name VARCHAR(240) NOT NULL,
@@ -103,6 +106,7 @@ CREATE TABLE Dryer (
 
 CREATE TABLE TV (
     tv_id int NOT NULL AUTO_INCREMENT,
+    appliance_number int NOT NULL,
     FK_tv_email_HouseHold_email varchar(240) NOT NULL,
     model_name VARCHAR(240) ,
 	name VARCHAR(240) NOT NULL,
@@ -116,6 +120,7 @@ CREATE TABLE TV (
 
 CREATE TABLE Cooker (
     cooker_id int NOT NULL AUTO_INCREMENT,
+    appliance_number int NOT NULL,
     FK_cooker_email_HouseHold_email varchar(240) NOT NULL,
     model_name VARCHAR(240),
     name VARCHAR(240) NOT NULL,
@@ -127,6 +132,7 @@ CREATE TABLE Cooker (
 
 CREATE TABLE Oven (
     FK_Oven_id_Cooker_cooker_id int NOT NULL,
+    appliance_number int NOT NULL,
     FK_oven_email_HouseHold_email varchar(240) NOT NULL,
 	has_gas_heat_source BOOLEAN NOT NULL, 
 	has_electric_heat_source BOOLEAN NOT NULL,
@@ -139,6 +145,7 @@ CREATE TABLE Oven (
 
 CREATE TABLE Cooktop (
     FK_Cooktop_id_Cooker_cooker_id int NOT NULL,
+    appliance_number int NOT NULL,
     FK_cooktop_email_HouseHold_email varchar(240) NOT NULL,
 	heat_source VARCHAR(240) NOT NULL, 
 	PRIMARY KEY (FK_Cooktop_id_Cooker_cooker_id, FK_cooktop_email_HouseHold_email),
