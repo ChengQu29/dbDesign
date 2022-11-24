@@ -1,18 +1,25 @@
 import { Row } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { submitApplianceForm } from "../Slices/applianceSlice";
 
 const ApplianceList = () => {
     const navigate = useNavigate();
     const appliances = useSelector(state => state.appliance.appliances);
     const email = useSelector(state => state.household.email);
-    console.log(appliances);
+    const dispatch = useDispatch();
 
     const handleSubmit = async form => {
         // TODO: use the `appliances` variable and the `email` variable to submit all appliances to the middleware
+        try {
+            const fulfilledAction = await dispatch(submitApplianceForm({email, appliances}));
+            console.log(fulfilledAction);
+        } catch(error) {
+            return { email: "Something is wrong" };
+        }
         console.log("Success");
         console.log(email);
         console.log(appliances);
