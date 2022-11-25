@@ -491,7 +491,7 @@ class AverageTVdisplaysizebystate(Resource):
     def get (self):
         try:
             db.cursor.execute('''
-            SELECT state, FORMAT(AVG(display_size), '2.#') AS Average_size FROM
+            SELECT state, FORMAT(AVG(display_size), '1.#') AS Average_size FROM
             (select state, postal_code, email, display_size from PostalCode join HouseHold ON postal_code=HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code
             join TV ON HouseHold.email = TV.FK_tv_email_HouseHold_email)  ALL_TV_IN_STATE
             group by state
@@ -507,25 +507,17 @@ class tvDrillDown(Resource):
     def get(self, state):
         try:
             db.cursor.execute('''
-            WITH x1 AS (
-            SELECT state, AVG(display_size) AS Average_size FROM
-            (select state, postal_code, email, display_size from PostalCode
-            join HouseHold
-            ON postal_code = HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code
-            join TV
-            ON HouseHold.email = TV.FK_tv_email_HouseHold_email) ALL_TV_IN_STATE
-            GROUP BY state
-            ORDER BY state ASC),
-            x2 AS (
-            SELECT state, display_type, maximum_resolution from PostalCode
+            SELECT display_type, maximum_resolution, 
+            FORMAT(avg_size, '1.#') as average_size FROM
+            (SELECT display_type, maximum_resolution, AVG(display_size) AS avg_size from (PostalCode
             JOIN HouseHold
             ON postal_code = HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code
             JOIN TV
             ON HouseHold.email = TV.FK_tv_email_HouseHold_email)
-            select x1.state, display_type AS screen_type, maximum_resolution, FORMAT(Average_size, '2.#') AS Average_size from x1
-            JOIN
-            x2
-            WHERE x1.state = %s
+            where state=%s
+            GROUP BY display_type, maximum_resolution
+            ORDER BY avg_size ASC) AS RESULT_QUERY			
+
 			''', (state,))
             res = db.cursor.fetchall()
             print(res)

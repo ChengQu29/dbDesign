@@ -69,7 +69,6 @@ const AverageTVdisplaysizebystate = () => {
                             <Table >
                                 <thead>
                                     <tr>
-                                        <th>State</th>
                                         <th>Screen Type</th>
 										<th>Maximum Resolution</th>
 										<th>Average Size</th>
@@ -81,7 +80,6 @@ const AverageTVdisplaysizebystate = () => {
                                             <td> {row[0]} </td>
                                             <td>{row[1]} </td>
 											<td>{row[2]} </td>
-											<td>{row[3]} </td>
                                         </tr> )
                                 }) }
                                 </tbody>
