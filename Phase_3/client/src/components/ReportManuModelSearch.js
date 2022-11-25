@@ -6,8 +6,8 @@ import Table from 'react-bootstrap/Table';
 import axios from 'axios';
 
  const ReportManuModelSearch = () => {
-    const [searchTerm, setSearchTerm] = useState();
-    const [ManuModelSearch, setManuModelSearch] = useState ([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [ManuModelSearch, setManuModelSearch] = useState([]);
     const {register, handleSubmit} = useForm('');
 
     const onSubmitFunc = async (data) =>{
@@ -18,7 +18,8 @@ import axios from 'axios';
       const res = await axios.get(`${url}/${ManuModel}`)
       setManuModelSearch(res.data['result'])
     }
-    console.log(ManuModelSearch);
+   console.log(ManuModelSearch);
+    
 return(
 <Row>
   <h3>Manufacturer / Model Search</h3>
@@ -37,10 +38,10 @@ return(
         </tr>
       </thead>
       <tbody>
-        {ManuModelSearch && ManuModelSearch.map && ManuModelSearch.map((row) =>{
-          return(<tr key={row[0]}>
-            <td style={{backgroundColor: (searchTerm !== undefined && row[0].toUpperCase().indexOf(searchTerm.toUpperCase()) !== -1)?"#90EE90":""}}>{row[0]}</td>
-            <td style={{backgroundColor: (searchTerm !== undefined && row[1].toUpperCase().indexOf(searchTerm.toUpperCase()) !== -1)?"#90EE90":""}}>{row[1]}</td>
+        {ManuModelSearch && ManuModelSearch.map && ManuModelSearch.map((row, index) =>{
+          return(<tr key={index}>
+            <td style={{backgroundColor: (searchTerm !== undefined && searchTerm !== null && row[0] !== null && row[0].toUpperCase().indexOf(searchTerm.toUpperCase()) !== -1)?"#90EE90":""}}>{row[0]}</td>
+            <td style={{backgroundColor: (searchTerm !== undefined && searchTerm !== null && row[1] !== null && row[1].toUpperCase().indexOf(searchTerm.toUpperCase()) !== -1)?"#90EE90":""}}>{row[1]}</td>
           </tr> )
         })}
       </tbody>
