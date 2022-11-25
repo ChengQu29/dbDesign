@@ -587,7 +587,7 @@ class ExtraFridgeFreezerReport2(Resource):
             on Freezer.FK_Freezer_email_HouseHold_email = Multi_Freezer_Household_State.email ) Multi_Freezer_Household_Type_State
             group by email, model_type, state) Model_Type_Count
             group by model_type, state
-            having model_type = 'chest'
+            having model_type = 'chest freezer'
             ) Chest_Count
             ON Multi_Freezer_Household.state = Chest_Count.state
             LEFT JOIN
@@ -610,7 +610,7 @@ class ExtraFridgeFreezerReport2(Resource):
             on Freezer.FK_Freezer_email_HouseHold_email = Multi_Freezer_Household_State.email ) Multi_Freezer_Household_Type_State
             group by email, model_type, state) Model_Type_Count
             group by model_type, state
-            having model_type = 'upright'
+            having model_type = 'upright freezer'
             ) Upright_Count
             ON Multi_Freezer_Household.state = Upright_Count.state
             LEFT JOIN
@@ -632,7 +632,7 @@ class ExtraFridgeFreezerReport2(Resource):
             on PostalCode.postal_code = Multi_Freezer_Household_PostalCode.postal_code) Multi_Freezer_Household_State
             on Freezer.FK_Freezer_email_HouseHold_email = Multi_Freezer_Household_State.email ) Multi_Freezer_Household_Type_State
             group by email, model_type, state
-            having model_type not in ('chest', 'upright')
+            having model_type not in ('chest freezer', 'upright freezer')
             ) household_other_freezer
             group by state
             ) Other_Count_Aggregated
