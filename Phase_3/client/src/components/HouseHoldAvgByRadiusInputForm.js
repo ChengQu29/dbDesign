@@ -20,7 +20,7 @@ const HouseHoldAvgByRadiusInputForm = () => {
         } catch(error) {
             return { postalCode: "PostalCode Not Found" };
         }
-        dispatch(updateRadius({ radius: form.radius }));
+        dispatch(updateRadius({ radius: form.radius, postalCode: form.postalCode }));
         navigate("/reports/HouseHoldAvgByRadiusReport");
     };
 
