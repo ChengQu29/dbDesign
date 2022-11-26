@@ -161,32 +161,32 @@ class ApplianceForm(Resource):
         appliances = body['appliances']
         print("appliances data before insertion into DB: ", appliances)
         try:
-            for appliance in appliances:
+            for index, appliance in enumerate(appliances):
                 print(appliance)
                 if appliance["applianceType"] == "freezer":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
                     freezerType = appliance.get("freezerType", None)
                     db.cursor.execute('''
-                    INSERT INTO Freezer (FK_Freezer_email_HouseHold_email, Model_name, name, model_type)
-                    VALUES (%s, %s, %s, %s)
-                    ''', (email, modelName, manufacturer, freezerType))
+                    INSERT INTO Freezer (appliance_number, FK_Freezer_email_HouseHold_email, Model_name, name, model_type)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer, freezerType))
                 elif appliance["applianceType"] == "washer":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
                     loadingType = appliance.get("loadingType", None)
                     db.cursor.execute('''
-                    INSERT INTO Washer (FK_Washer_email_HouseHold_email, Model_name, name, loading_type)
-                    VALUES (%s, %s, %s, %s)
-                    ''', (email, modelName, manufacturer, loadingType))
+                    INSERT INTO Washer (appliance_number, FK_Washer_email_HouseHold_email, Model_name, name, loading_type)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer, loadingType))
                 elif appliance["applianceType"] == "dryer":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
                     dryerHeatSource = appliance.get("dryerHeatSource", None)
                     db.cursor.execute('''
-                    INSERT INTO Dryer (FK_Dryer_email_HouseHold_email, Model_name, name, heat_source)
-                    VALUES (%s, %s, %s, %s)
-                    ''', (email, modelName, manufacturer, dryerHeatSource))
+                    INSERT INTO Dryer (appliance_number, FK_Dryer_email_HouseHold_email, Model_name, name, heat_source)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer, dryerHeatSource))
                 elif appliance["applianceType"] == "tv":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
@@ -194,16 +194,16 @@ class ApplianceForm(Resource):
                     displaySize = appliance.get("displaySize", None)
                     maximumResolution = appliance.get("maximumResolution", None)
                     db.cursor.execute('''
-                    INSERT INTO TV (FK_tv_email_HouseHold_email, model_name, name, display_type, display_size, maximum_resolution)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                    ''', (email, modelName, manufacturer, displayType, displaySize, maximumResolution))
+                    INSERT INTO TV (appliance_number, FK_tv_email_HouseHold_email, model_name, name, display_type, display_size, maximum_resolution)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer, displayType, displaySize, maximumResolution))
                 elif appliance["applianceType"] == "cooker":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
                     db.cursor.execute('''
-                    INSERT INTO Cooker (FK_Cooker_email_HouseHold_email, model_name, name)
-                    VALUES (%s, %s, %s)
-                    ''', (email, modelName, manufacturer))
+                    INSERT INTO Cooker (appliance_number, FK_Cooker_email_HouseHold_email, model_name, name)
+                    VALUES (%s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer))
                     lastrow = db.cursor.lastrowid
                     print(lastrow)
                     
@@ -221,16 +221,16 @@ class ApplianceForm(Resource):
                             if ovenHeatSource == "microwave":
                                 hasMicroWaveHeatSource = 1
                         db.cursor.execute('''
-                        INSERT INTO Oven (FK_Oven_id_Cooker_cooker_id, FK_oven_email_HouseHold_email, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source, oven_type)
-                        VALUES (%s, %s, %s, %s, %s, %s)
-                        ''', (lastrow, email,  hasGasHeatSource, hasElectricHeatSource, hasMicroWaveHeatSource, cookerType))
+                        INSERT INTO Oven (FK_Oven_id_Cooker_cooker_id, appliance_number, FK_oven_email_HouseHold_email, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source, oven_type)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        ''', (lastrow, index+1, email,  hasGasHeatSource, hasElectricHeatSource, hasMicroWaveHeatSource, cookerType))
                     
                     if ("isCooktop" in appliance) and appliance["isCooktop"] == True:
                         cookTopHeatSource = appliance.get("cooktopHeatSource")
                         db.cursor.execute('''
-                        INSERT INTO Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_cooktop_email_HouseHold_email, heat_source)
-                        VALUES (%s, %s, %s)
-                        ''', (lastrow, email, cookTopHeatSource))
+                        INSERT INTO Cooktop (FK_Cooktop_id_Cooker_cooker_id, appliance_number, FK_cooktop_email_HouseHold_email, heat_source)
+                        VALUES (%s, %s, %s, %s)
+                        ''', (lastrow, index+1, email, cookTopHeatSource))
                         print("cookTopHeatSource is: ", cookTopHeatSource)
             db.cnx.commit()
             return({}, 200)
