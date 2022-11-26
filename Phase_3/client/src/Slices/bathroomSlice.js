@@ -17,8 +17,11 @@ export const bathroomSlice = createSlice({
         addBathroom: (state, action) => {
             state.bathrooms = state.bathrooms.concat(action.payload);
         },
+        resetBathroom: (state, action) => {
+            state.bathrooms = []
+        }
     }
 });
 
-export const { addBathroom } = bathroomSlice.actions;
+export const { addBathroom, resetBathroom } = bathroomSlice.actions;
 export default bathroomSlice.reducer

@@ -66,6 +66,17 @@ export const householdSlice = createSlice({
             state.squareFootage = action.payload.squareFootage;
             state.occupants = action.payload.occupants;
             state.bedrooms = action.payload.bedrooms;
+        },
+        resetHousehold: (state, action) => {
+            state.email = null;
+            state.postalCode = null;
+            state.areaCode = null;
+            state.number = null;
+            state.phoneType = null;
+            state.homeType = null;
+            state.squareFootage = null;
+            state.occupants = null;
+            state.bedrooms = null;
         }
     },
     extraReducers(builder) {
@@ -77,5 +88,5 @@ export const householdSlice = createSlice({
 });
 
 
-export const { updateEmail, updatePostalCode, updatePhoneNumber, updateHousehold } = householdSlice.actions;
+export const { updateEmail, updatePostalCode, updatePhoneNumber, updateHousehold, resetHousehold } = householdSlice.actions;
 export default householdSlice.reducer

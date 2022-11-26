@@ -4,7 +4,9 @@ import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { submitApplianceForm } from "../Slices/applianceSlice";
+import { submitApplianceForm, resetAppliance } from "../Slices/applianceSlice";
+import { resetBathroom } from "../Slices/bathroomSlice";
+import { resetHousehold } from "../Slices/householdSlice";
 
 const ApplianceList = () => {
     const navigate = useNavigate();
@@ -23,6 +25,9 @@ const ApplianceList = () => {
         console.log("Success");
         console.log(email);
         console.log(appliances);
+        dispatch(resetAppliance());
+        dispatch(resetBathroom());
+        dispatch(resetHousehold());
         navigate("/succeed");
     };
 
@@ -53,7 +58,7 @@ const ApplianceList = () => {
                 </tbody>
             </Table>
             <Link to="/appliance/form">+ Add another appliance</Link>
-            <Button variant="primary" onClick={handleSubmit}>
+            <Button variant="primary" onClick={handleSubmit} disabled={appliances.length === 0}>
                 Next
             </Button>
         </Row>

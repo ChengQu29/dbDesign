@@ -16,8 +16,11 @@ export const applianceSlice = createSlice({
         addAppliance: (state, action) => {
             state.appliances = state.appliances.concat(action.payload);
         },
+        resetAppliance: (state, action) => {
+            state.appliances = [];
+        },
     }
 });
 
-export const { addAppliance } = applianceSlice.actions;
+export const { addAppliance, resetAppliance } = applianceSlice.actions;
 export default applianceSlice.reducer

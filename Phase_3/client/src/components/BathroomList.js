@@ -50,7 +50,7 @@ const BathroomList = () => {
                 </tbody>
             </Table>
             <Link to="/bathroom/form">+ Add another bathroom</Link>
-            <Button variant="primary" onClick={handleSubmit}>
+            <Button variant="primary" onClick={handleSubmit} disabled={bathrooms.length === 0}>
                 Next
             </Button>
         </Row>
