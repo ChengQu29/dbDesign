@@ -11,11 +11,13 @@ export const radiusSlice = createSlice({
     name: 'radius',
     initialState: {
         radius: null,
+        postalCode: null
     },
     reducers: {
         updateRadius: (state, action) => {
             console.log("payload is: ", action.payload)
             state.radius = action.payload.radius;
+            state.postalCode = action.payload.postalCode;
         }
     }
 });
