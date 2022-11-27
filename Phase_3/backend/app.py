@@ -161,32 +161,32 @@ class ApplianceForm(Resource):
         appliances = body['appliances']
         print("appliances data before insertion into DB: ", appliances)
         try:
-            for appliance in appliances:
+            for index, appliance in enumerate(appliances):
                 print(appliance)
                 if appliance["applianceType"] == "freezer":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
                     freezerType = appliance.get("freezerType", None)
                     db.cursor.execute('''
-                    INSERT INTO Freezer (FK_Freezer_email_HouseHold_email, Model_name, name, model_type)
-                    VALUES (%s, %s, %s, %s)
-                    ''', (email, modelName, manufacturer, freezerType))
+                    INSERT INTO Freezer (appliance_number, FK_Freezer_email_HouseHold_email, Model_name, name, model_type)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer, freezerType))
                 elif appliance["applianceType"] == "washer":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
                     loadingType = appliance.get("loadingType", None)
                     db.cursor.execute('''
-                    INSERT INTO Washer (FK_Washer_email_HouseHold_email, Model_name, name, loading_type)
-                    VALUES (%s, %s, %s, %s)
-                    ''', (email, modelName, manufacturer, loadingType))
+                    INSERT INTO Washer (appliance_number, FK_Washer_email_HouseHold_email, Model_name, name, loading_type)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer, loadingType))
                 elif appliance["applianceType"] == "dryer":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
                     dryerHeatSource = appliance.get("dryerHeatSource", None)
                     db.cursor.execute('''
-                    INSERT INTO Dryer (FK_Dryer_email_HouseHold_email, Model_name, name, heat_source)
-                    VALUES (%s, %s, %s, %s)
-                    ''', (email, modelName, manufacturer, dryerHeatSource))
+                    INSERT INTO Dryer (appliance_number, FK_Dryer_email_HouseHold_email, Model_name, name, heat_source)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer, dryerHeatSource))
                 elif appliance["applianceType"] == "tv":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
@@ -194,16 +194,16 @@ class ApplianceForm(Resource):
                     displaySize = appliance.get("displaySize", None)
                     maximumResolution = appliance.get("maximumResolution", None)
                     db.cursor.execute('''
-                    INSERT INTO TV (FK_tv_email_HouseHold_email, model_name, name, display_type, display_size, maximum_resolution)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                    ''', (email, modelName, manufacturer, displayType, displaySize, maximumResolution))
+                    INSERT INTO TV (appliance_number, FK_tv_email_HouseHold_email, model_name, name, display_type, display_size, maximum_resolution)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer, displayType, displaySize, maximumResolution))
                 elif appliance["applianceType"] == "cooker":
                     manufacturer = appliance.get("manufacturer", None)
                     modelName = appliance.get("modelName", None)
                     db.cursor.execute('''
-                    INSERT INTO Cooker (FK_Cooker_email_HouseHold_email, model_name, name)
-                    VALUES (%s, %s, %s)
-                    ''', (email, modelName, manufacturer))
+                    INSERT INTO Cooker (appliance_number, FK_Cooker_email_HouseHold_email, model_name, name)
+                    VALUES (%s, %s, %s, %s)
+                    ''', (index+1, email, modelName, manufacturer))
                     lastrow = db.cursor.lastrowid
                     print(lastrow)
                     
@@ -221,16 +221,16 @@ class ApplianceForm(Resource):
                             if ovenHeatSource == "microwave":
                                 hasMicroWaveHeatSource = 1
                         db.cursor.execute('''
-                        INSERT INTO Oven (FK_Oven_id_Cooker_cooker_id, FK_oven_email_HouseHold_email, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source, oven_type)
-                        VALUES (%s, %s, %s, %s, %s, %s)
-                        ''', (lastrow, email,  hasGasHeatSource, hasElectricHeatSource, hasMicroWaveHeatSource, cookerType))
+                        INSERT INTO Oven (FK_Oven_id_Cooker_cooker_id, appliance_number, FK_oven_email_HouseHold_email, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source, oven_type)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        ''', (lastrow, index+1, email,  hasGasHeatSource, hasElectricHeatSource, hasMicroWaveHeatSource, cookerType))
                     
                     if ("isCooktop" in appliance) and appliance["isCooktop"] == True:
                         cookTopHeatSource = appliance.get("cooktopHeatSource")
                         db.cursor.execute('''
-                        INSERT INTO Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_cooktop_email_HouseHold_email, heat_source)
-                        VALUES (%s, %s, %s)
-                        ''', (lastrow, email, cookTopHeatSource))
+                        INSERT INTO Cooktop (FK_Cooktop_id_Cooker_cooker_id, appliance_number, FK_cooktop_email_HouseHold_email, heat_source)
+                        VALUES (%s, %s, %s, %s)
+                        ''', (lastrow, index+1, email, cookTopHeatSource))
                         print("cookTopHeatSource is: ", cookTopHeatSource)
             db.cnx.commit()
             return({}, 200)
@@ -248,45 +248,62 @@ class HouseHoldAvgByRadius(Resource):
             SELECT AVG(occupant), AVG(bedroom), AVG(NumberOfBathroom), AVG(RatioOfCommodeToOccupant), AVG(NumberOfAppliance), sum(gasHeat), sum(electricHeat), sum(microwaveHeat) AS mostCommonHeat FROM 
             (With x0 AS 
                 (select FK_Freezer_email_HouseHold_email AS Email, (ifnull(NumberOfApp.A,0) + ifnull(NumberOfApp.B,0) + ifnull(NumberOfApp.C,0) + ifnull(NumberOfApp.D,0) + ifnull(NumberOfApp.E,0)) AS Total From 
-                (With FreezerOwnedPerHousehold As (select FK_Freezer_email_HouseHold_email, count(*) AS A from FREEZER 
+                (With FreezerOwnedPerHouseHold As (select FK_Freezer_email_HouseHold_email, count(*) AS A from Freezer 
                 group by FK_Freezer_email_HouseHold_email), 
-                CookerOwnedPerHousehold AS (select FK_Cooker_email_HouseHold_email, count(*) AS B from COOKER 
+                CookerOwnedPerHouseHold AS (select FK_Cooker_email_HouseHold_email, count(*) AS B from Cooker 
                 group by FK_Cooker_email_HouseHold_email), 
-                WasherOwnedPerHousehold AS (select FK_Washer_email_HouseHold_email, count(*) AS C from WASHER 
+                WasherOwnedPerHouseHold AS (select FK_Washer_email_HouseHold_email, count(*) AS C from Washer 
                 group by FK_Washer_email_HouseHold_email), 
-                DryerOwnedPerHousehold AS (select FK_Dryer_email_HouseHold_email, count(*) AS D from DRYER 
+                DryerOwnedPerHouseHold AS (select FK_Dryer_email_HouseHold_email, count(*) AS D from Dryer
                 group by FK_Dryer_email_HouseHold_email), 
-                TVOwnedPerHousehold AS (select FK_TV_email_HouseHold_email, count(*) AS E from TV 
+                TVOwnedPerHouseHold AS (select FK_TV_email_HouseHold_email, count(*) AS E from TV 
                 group by FK_TV_email_HouseHold_email) 
-                select * from FreezerOwnedPerHousehold 
+                select * from FreezerOwnedPerHouseHold 
                 left join 
-                CookerOwnedPerHousehold 
-                ON FreezerOwnedPerHousehold.FK_Freezer_email_HouseHold_email = CookerOwnedPerHousehold.FK_Cooker_email_HouseHold_email 
+                CookerOwnedPerHouseHold 
+                ON FreezerOwnedPerHouseHold.FK_Freezer_email_HouseHold_email = CookerOwnedPerHouseHold.FK_Cooker_email_HouseHold_email 
                 left join 
-                WasherOwnedPerHousehold 
-                ON FreezerOwnedPerHousehold.FK_Freezer_email_HouseHold_email = WasherOwnedPerHousehold.FK_Washer_email_HouseHold_email 
+                WasherOwnedPerHouseHold 
+                ON FreezerOwnedPerHouseHold.FK_Freezer_email_HouseHold_email = WasherOwnedPerHouseHold.FK_Washer_email_HouseHold_email 
                 left join 
-                DryerOwnedPerHousehold 
-                ON FreezerOwnedPerHousehold.FK_Freezer_email_HouseHold_email = DryerOwnedPerHousehold.FK_Dryer_email_HouseHold_email 
+                DryerOwnedPerHouseHold 
+                ON FreezerOwnedPerHouseHold.FK_Freezer_email_HouseHold_email = DryerOwnedPerHouseHold.FK_Dryer_email_HouseHold_email 
                 left join 
-                TVOwnedPerHousehold 
-                ON FreezerOwnedPerHousehold.FK_Freezer_email_HouseHold_email = TVOwnedPerHousehold.FK_TV_email_HouseHold_email) AS NumberOfApp), 
+                TVOwnedPerHouseHold 
+                ON FreezerOwnedPerHouseHold.FK_Freezer_email_HouseHold_email = TVOwnedPerHouseHold.FK_TV_email_HouseHold_email) AS NumberOfApp), 
             x1 AS 
+<<<<<<< HEAD
                 (Select distinct postal_code, email, occupant, bedroom, D, ifnull(Full.number,0) AS fullNumber, ifnull(Half.number,0) AS halfNumber, ifnull(has_gas_heat_source,0) AS gasHeat, ifnull(has_electric_heat_source,0) AS electricHeat, ifnull(has_microwave_heat_source,0) AS microwaveHeat, ifnull(Cooktop.heat_source,0) AS cooktopHeatSource, ifnull(FULL.commode,0) AS FullCommode, ifnull(HALF.commode,0) As HalfCommode from  
+=======
+                (Select distinct postal_code, email, occupant, bedroom, D, ifnull(Full.number,0) AS fullNumber, ifnull(Half.number,0) AS halfNumber, ifnull(has_gas_heat_source,0) AS gasHeat, ifnull(has_electric_heat_source,0) AS electricHeat, ifnull(has_microwave_heat_source,0) AS microwaveHeat, ifnull(Cooktop.heat_source,0) AS cooktopHeatSource, ifnull(Full.commode,0) AS FullCommode, ifnull(Half.commode,0) As HalfCommode from  
+>>>>>>> 04acf273d16a121b8c0f195bec071df800360bf1
                 (Select postal_code, city, latitude, longitude, 
                     acos(sin(%s) * sin(latitude) + cos(%s) * cos(latitude) * cos(longitude - (%s))) * 3958.8 As D 
                 From PostalCode 
                 Where acos(sin(%s) * sin(latitude) + cos(%s) * cos(latitude) * cos(longitude - (%s))) * 3958.8 <= %s) AS PostalCode_Within_Distance 
+<<<<<<< HEAD
                 Join Household 
                 ON PostalCode_Within_Distance.postal_code = Household.FK_HouseHold_postal_code_PostalCode_postal_code 
+=======
+                Join HouseHold 
+                ON PostalCode_Within_Distance.postal_code = HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code 
+>>>>>>> 04acf273d16a121b8c0f195bec071df800360bf1
                 left Join Oven 
-                ON Household.email = Oven.FK_oven_email_HouseHold_email 
+                ON HouseHold.email = Oven.FK_oven_email_HouseHold_email 
                 left Join Cooktop
+<<<<<<< HEAD
                 On Household.email = Cooktop.FK_cooktop_email_Household_email
                 left Join FULL 
                 ON Household.email = FULL.FK_Full_email_HouseHold_email 
                 left Join HALF 
                 ON Household.email = HALF.FK_Half_email_Household_email), 
+=======
+                On HouseHold.email = Cooktop.FK_cooktop_email_HouseHold_email
+                left Join Full
+                ON HouseHold.email = Full.FK_Full_email_HouseHold_email 
+                left Join Half 
+                ON HouseHold.email = Half.FK_Half_email_HouseHold_email), 
+>>>>>>> 04acf273d16a121b8c0f195bec071df800360bf1
                 
             x2 AS (select email, FORMAT(x1.occupant/coalesce(ifnull(x1.FullCommode,0)+ifnull(x1.HalfCommode,0), ifnull(x1.FullCommode,0), ifnull(x1.HalfCommode,0), 0), '2:#') AS RatioOfCommodeToOccupant from x1), 
             x3 AS (select email, (ifnull(x1.fullNumber,0) + ifnull(x1.halfNumber,0)) AS NumberOfBathroom from x1)
@@ -302,6 +319,7 @@ class HouseHoldAvgByRadius(Resource):
             res = db.cursor.fetchall()
             return({'result': res}, 200)
         except Exception as e:
+            print(e)
             return(f'Server side error: {e}', 500)
 api.add_resource(HouseHoldAvgByRadius, '/reports/radiusReport/<lon>/<lat>/<radius>')
 

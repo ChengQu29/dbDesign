@@ -8,6 +8,7 @@ import axios from 'axios';
  const ReportManuModelSearch = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [ManuModelSearch, setManuModelSearch] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const {register, handleSubmit} = useForm('');
 
     const onSubmitFunc = async (data) =>{
@@ -15,7 +16,9 @@ import axios from 'axios';
       const ManuModel = data['keyword']
       setSearchTerm(data['keyword']);
       const url = 'http://127.0.0.1:5000/reports/ManuModelSearch'
+      setIsLoading(true);
       const res = await axios.get(`${url}/${ManuModel}`)
+      setIsLoading(false);
       setManuModelSearch(res.data['result'])
     }
    console.log(ManuModelSearch);
@@ -30,6 +33,7 @@ return(
       </Form.Group>
       <Button as='input' type='submit' value='submit' className='mt-2'></Button>{''}
     </Form>
+    { isLoading ? "Loading ..." :
     <Table bordered hover>
       <thead>
         <tr>
@@ -47,6 +51,7 @@ return(
         }) }
       </tbody>
     </Table>
+    }
 </Row>
 )
  }
