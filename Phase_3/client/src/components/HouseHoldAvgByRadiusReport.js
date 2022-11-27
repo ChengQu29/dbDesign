@@ -11,7 +11,7 @@ const HouseHoldAvgByRadiusReport = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get(`http://127.0.0.1:5000/reports/radiusReport/${postalCodeInformationState.lon}/${postalCodeInformationState.lat}/${radiusState.radius}`)
+            const res = await axios.get(`http://127.0.0.1:5000/reports/radiusReport/${radiusState.postalCode}/${postalCodeInformationState.lon}/${postalCodeInformationState.lat}/${radiusState.radius}`)
             setRadiusResult(res.data['result'])
         }
         fetchData()

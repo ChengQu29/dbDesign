@@ -193,7 +193,7 @@ api.add_resource(ApplianceForm, '/appliance_submission')
 
 class HouseHoldAvgByRadius(Resource):
     @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['GET', 'OPTIONS'])
-    def get(self, lon, lat, radius):
+    def get(self, postalCode, lon, lat, radius):
         try:
             db.cursor.execute('''
             SELECT CEIL(AVG(occupant)), ROUND(AVG(bedroom),1), ROUND(AVG(NumberOfBathroom),1), ROUND(AVG(RatioOfCommodeToOccupant),2), ROUND(AVG(NumberOfAppliance),1) AS mostCommonHeat FROM 
@@ -227,7 +227,7 @@ class HouseHoldAvgByRadius(Resource):
                 (Select postal_code, city, latitude, longitude, 
                     acos(sin(%s) * sin(latitude) + cos(%s) * cos(latitude) * cos(longitude - (%s))) * 3958.8 As D 
                 From PostalCode 
-                Where acos(sin(%s) * sin(latitude) + cos(%s) * cos(latitude) * cos(longitude - (%s))) * 3958.8 <= %s) AS PostalCode_Within_Distance 
+                Where postal_code = %s OR acos(sin(%s) * sin(latitude) + cos(%s) * cos(latitude) * cos(longitude - (%s))) * 3958.8 <= %s) AS PostalCode_Within_Distance 
                 Join HouseHold 
                 ON PostalCode_Within_Distance.postal_code = HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code 
                 left Join Oven 
@@ -248,14 +248,14 @@ class HouseHoldAvgByRadius(Resource):
             on x1.email = x3.email
             left join x0 
             on x1.email = x0.email) AS statistics
-            ''', (lat, lat, lon, lat, lat, lon, radius)           
+            ''', (lat, lat, lon, postalCode, lat, lat, lon, radius)           
             )
             res = db.cursor.fetchall()
             return({'result': res}, 200)
         except Exception as e:
             print(e)
             return(f'Server side error: {e}', 500)
-api.add_resource(HouseHoldAvgByRadius, '/reports/radiusReport/<lon>/<lat>/<radius>')
+api.add_resource(HouseHoldAvgByRadius, '/reports/radiusReport/<postalCode>/<lon>/<lat>/<radius>')
 
 
 class PostalCode(Resource):
