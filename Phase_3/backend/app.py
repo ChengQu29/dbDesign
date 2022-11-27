@@ -41,55 +41,6 @@ class Household(Resource):
         pass
 api.add_resource(Household, '/household/<email>')
 
-class CookerForm(Resource):
-    def post(self, email, modelName, manufacturer):
-        try:
-            db.cursor.execute(
-                '''
-                INSERT INTO Cooker (FK_Cooker_email_HouseHold_email, model_name, name)
-                VALUES (%s, %s, %s);
-                ''', (email, modelName, manufacturer)
-            )
-            db.cnx.commit()
-            return({}, 201)
-        except Exception as e:
-            print(e)
-            return(f'Server side error: {e}', 500)
-api.add_resource(CookerForm, '/insertCooker/<email>/<modelName>/<manufacturer>')
-
-class OvenForm(Resource):
-    def post(self, cookerId, email, has_gas, has_electric, has_microwave, oven_type):
-        try:
-            db.cursor.execute(
-                '''
-                INSERT INTO Oven (FK_Oven_id_Cooker_cooker_id, FK_oven_email_HouseHold_email, has_gas_heat_source, has_electric_heat_source, has_microwave_heat_source, oven_type)
-                VALUES (%s, %s, %s, %s, %s, %s);
-                ''', (cookerId, email, has_gas, has_electric, has_microwave, oven_type)
-            )
-            db.cnx.commit()
-            return({}, 201)
-        except Exception as e:
-            print(e)
-            return(f'Server side error: {e}', 500)
-api.add_resource(OvenForm, '/insertOven/<cookerId>/<email>/<has_gas>/<has_electric>/<has_microwave>/<oven_type>')
-
-class CooktopForm(Resource):
-    def post(self, cookerId, email, heat_source):
-        try:
-            db.cursor.execute(
-                '''
-                INSERT INTO Cooktop (FK_Cooktop_id_Cooker_cooker_id, FK_cooktop_email_HouseHold_email, heat_source)
-                VALUES (%s, %s, %s);
-                ''', (cookerId, email, heat_source)
-            )
-            db.cnx.commit()
-            return({}, 201)
-        except Exception as e:
-            print(e)
-            return(f'Server side error: {e}', 500)
-api.add_resource(CooktopForm, '/insertCooktop/<cookerId>/<email>/<heat_source>')
-
-
 class HouseholdForm(Resource):
     @cross_origin(send_wildcard=True,headers=['Content-Type','Authorization'], methods=['POST', 'OPTIONS'])
     def post(self):
@@ -245,7 +196,7 @@ class HouseHoldAvgByRadius(Resource):
     def get(self, lon, lat, radius):
         try:
             db.cursor.execute('''
-            SELECT AVG(occupant), AVG(bedroom), AVG(NumberOfBathroom), AVG(RatioOfCommodeToOccupant), AVG(NumberOfAppliance), sum(gasHeat), sum(electricHeat), sum(microwaveHeat) AS mostCommonHeat FROM 
+            SELECT CEIL(AVG(occupant)), ROUND(AVG(bedroom),1), ROUND(AVG(NumberOfBathroom),1), ROUND(AVG(RatioOfCommodeToOccupant),2), ROUND(AVG(NumberOfAppliance),1) AS mostCommonHeat FROM 
             (With x0 AS 
                 (select FK_Freezer_email_HouseHold_email AS Email, (ifnull(NumberOfApp.A,0) + ifnull(NumberOfApp.B,0) + ifnull(NumberOfApp.C,0) + ifnull(NumberOfApp.D,0) + ifnull(NumberOfApp.E,0)) AS Total From 
                 (With FreezerOwnedPerHouseHold As (select FK_Freezer_email_HouseHold_email, count(*) AS A from Freezer 
