@@ -272,38 +272,21 @@ class HouseHoldAvgByRadius(Resource):
                 TVOwnedPerHouseHold 
                 ON FreezerOwnedPerHouseHold.FK_Freezer_email_HouseHold_email = TVOwnedPerHouseHold.FK_TV_email_HouseHold_email) AS NumberOfApp), 
             x1 AS 
-<<<<<<< HEAD
-                (Select distinct postal_code, email, occupant, bedroom, D, ifnull(Full.number,0) AS fullNumber, ifnull(Half.number,0) AS halfNumber, ifnull(has_gas_heat_source,0) AS gasHeat, ifnull(has_electric_heat_source,0) AS electricHeat, ifnull(has_microwave_heat_source,0) AS microwaveHeat, ifnull(Cooktop.heat_source,0) AS cooktopHeatSource, ifnull(FULL.commode,0) AS FullCommode, ifnull(HALF.commode,0) As HalfCommode from  
-=======
                 (Select distinct postal_code, email, occupant, bedroom, D, ifnull(Full.number,0) AS fullNumber, ifnull(Half.number,0) AS halfNumber, ifnull(has_gas_heat_source,0) AS gasHeat, ifnull(has_electric_heat_source,0) AS electricHeat, ifnull(has_microwave_heat_source,0) AS microwaveHeat, ifnull(Cooktop.heat_source,0) AS cooktopHeatSource, ifnull(Full.commode,0) AS FullCommode, ifnull(Half.commode,0) As HalfCommode from  
->>>>>>> 04acf273d16a121b8c0f195bec071df800360bf1
                 (Select postal_code, city, latitude, longitude, 
                     acos(sin(%s) * sin(latitude) + cos(%s) * cos(latitude) * cos(longitude - (%s))) * 3958.8 As D 
                 From PostalCode 
                 Where acos(sin(%s) * sin(latitude) + cos(%s) * cos(latitude) * cos(longitude - (%s))) * 3958.8 <= %s) AS PostalCode_Within_Distance 
-<<<<<<< HEAD
-                Join Household 
-                ON PostalCode_Within_Distance.postal_code = Household.FK_HouseHold_postal_code_PostalCode_postal_code 
-=======
                 Join HouseHold 
                 ON PostalCode_Within_Distance.postal_code = HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code 
->>>>>>> 04acf273d16a121b8c0f195bec071df800360bf1
                 left Join Oven 
                 ON HouseHold.email = Oven.FK_oven_email_HouseHold_email 
                 left Join Cooktop
-<<<<<<< HEAD
-                On Household.email = Cooktop.FK_cooktop_email_Household_email
-                left Join FULL 
-                ON Household.email = FULL.FK_Full_email_HouseHold_email 
-                left Join HALF 
-                ON Household.email = HALF.FK_Half_email_Household_email), 
-=======
                 On HouseHold.email = Cooktop.FK_cooktop_email_HouseHold_email
                 left Join Full
                 ON HouseHold.email = Full.FK_Full_email_HouseHold_email 
                 left Join Half 
                 ON HouseHold.email = Half.FK_Half_email_HouseHold_email), 
->>>>>>> 04acf273d16a121b8c0f195bec071df800360bf1
                 
             x2 AS (select email, FORMAT(x1.occupant/coalesce(ifnull(x1.FullCommode,0)+ifnull(x1.HalfCommode,0), ifnull(x1.FullCommode,0), ifnull(x1.HalfCommode,0), 0), '2:#') AS RatioOfCommodeToOccupant from x1), 
             x3 AS (select email, (ifnull(x1.fullNumber,0) + ifnull(x1.halfNumber,0)) AS NumberOfBathroom from x1)
@@ -534,7 +517,7 @@ class tvDrillDown(Resource):
             ON HouseHold.email = TV.FK_tv_email_HouseHold_email)
             where state=%s
             GROUP BY display_type, maximum_resolution
-            ORDER BY avg_size ASC) AS RESULT_QUERY			
+            ORDER BY avg_size DESC) AS RESULT_QUERY			
 
 			''', (state,))
             res = db.cursor.fetchall()
