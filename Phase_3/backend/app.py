@@ -799,14 +799,19 @@ class MostBidetsState(Resource):
     def get (self):
         try:
             db.cursor.execute('''
-            (SELECT state as 'state_with_most_bidets', 
-            FORMAT(SUM(bidet), '0.#') as 'bidet_count' FROM ((SELECT PostalCode.state AS 'state' , HouseHold.email, Full.bidet FROM PostalCode
-            JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
-            JOIN Full ON HouseHold.email=Full.FK_Full_email_HouseHold_email) UNION ALL
-            (SELECT PostalCode.state, HouseHold.email, Half.bidet FROM PostalCode
-            JOIN HouseHold ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code
-            JOIN Half ON HouseHold.email=Half.FK_Half_email_HouseHold_email)) state_bidets
-            GROUP BY state) ORDER BY `bidet_count` desc LIMIT 1;
+            SELECT state, FORMAT(bidet_counts, '0.#') FROM
+			((SELECT state, SUM(bidet) as bidet_counts FROM
+			((SELECT PostalCode.state AS 'state' , HouseHold.email, Full.bidet FROM 
+            Full 
+            JOIN HouseHold ON HouseHold.email=Full.FK_Full_email_HouseHold_email
+            JOIN PostalCode ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code) 
+			UNION ALL
+			(SELECT PostalCode.state, HouseHold.email, Half.bidet FROM 
+            Half
+            JOIN HouseHold ON HouseHold.email=Half.FK_Half_email_HouseHold_email
+            JOIN PostalCode ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code=PostalCode.postal_code)) STATE_BIDETS
+			GROUP BY state )
+			ORDER BY bidet_counts DESC LIMIT 1) ZZZ
 			''')
             res = db.cursor.fetchall()
             print(res)
