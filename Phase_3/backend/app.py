@@ -444,8 +444,8 @@ class AverageTVdisplaysizebystate(Resource):
         try:
             db.cursor.execute('''
             SELECT state, FORMAT(AVG(display_size), '1.#') AS Average_size FROM
-            (select state, postal_code, email, display_size from PostalCode join HouseHold ON postal_code=HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code
-            join TV ON HouseHold.email = TV.FK_tv_email_HouseHold_email)  ALL_TV_IN_STATE
+            (select state, postal_code, email, display_size from PostalCode left outer join HouseHold ON postal_code=HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code
+            left outer join TV ON HouseHold.email = TV.FK_tv_email_HouseHold_email)  ALL_TV_IN_STATE
             group by state
             ORDER BY STATE ASC''')
             res = db.cursor.fetchall()
