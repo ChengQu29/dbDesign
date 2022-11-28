@@ -31,6 +31,7 @@ const HouseHoldAvgByRadiusReport = () => {
                         <th>Average number of bathrooms </th>
                         <th>Ratio of commodes to occupants </th>
                         <th>Number of appliances</th>
+                        <th>Most common heat source</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,6 +46,7 @@ const HouseHoldAvgByRadiusReport = () => {
                             <td>{row[2]}</td>
                             <td>{row[3]}</td>
                             <td>{row[4]}</td>
+                            <td>{row[5]}</td>
                         </tr> 
                     )
                 }) }
