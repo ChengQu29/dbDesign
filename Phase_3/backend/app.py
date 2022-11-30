@@ -196,7 +196,10 @@ class HouseHoldAvgByRadius(Resource):
     def get(self, postalCode, lon, lat, radius):
         try:
             db.cursor.execute('''
-            SELECT CEIL(AVG(occupant)), ROUND(AVG(bedroom),1), ROUND(AVG(NumberOfBathroom),1), ROUND(AVG(RatioOfCommodeToOccupant),2), ROUND(AVG(NumberOfAppliance),1) AS mostCommonHeat FROM 
+            
+            with first_part AS (
+
+            SELECT CEIL(AVG(occupant)) AS col1, ROUND(AVG(bedroom),1) AS col2, ROUND(AVG(NumberOfBathroom),1) AS col3, ROUND(AVG(RatioOfCommodeToOccupant),2) AS col4, ROUND(AVG(NumberOfAppliance),1) AS col5 FROM 
             (With x0 AS 
                 (select FK_Freezer_email_HouseHold_email AS Email, (ifnull(NumberOfApp.A,0) + ifnull(NumberOfApp.B,0) + ifnull(NumberOfApp.C,0) + ifnull(NumberOfApp.D,0) + ifnull(NumberOfApp.E,0)) AS Total From 
                 (With FreezerOwnedPerHouseHold As (select FK_Freezer_email_HouseHold_email, count(*) AS A from Freezer 
@@ -248,7 +251,73 @@ class HouseHoldAvgByRadius(Resource):
             on x1.email = x3.email
             left join x0 
             on x1.email = x0.email) AS statistics
-            ''', (lat, lat, lon, postalCode, lat, lat, lon, radius)           
+            ),
+
+            second_part AS (
+
+            SELECT source FROM 
+            (WITH DUDES as 
+            (
+                select email FROM 
+            HouseHold 
+            JOIN PostalCode
+            ON HouseHold.FK_HouseHold_postal_code_PostalCode_postal_code = PostalCode.postal_code
+            WHERE
+            postal_code = %s OR
+            acos(sin(%s) * sin(latitude) + cos(%s) * cos(latitude) * cos(longitude - (%s))) * 3958.8 <= %s
+            )
+            SELECT source FROM
+            (SELECT "gas" as source, COUNT(*) as counts FROM
+            (
+            select FK_cooktop_email_HouseHold_email
+            FROM Cooktop JOIN DUDES ON DUDES.email=Cooktop.FK_cooktop_email_HouseHold_email
+            WHERE heat_source LIKE '%gas%' AND Cooktop.FK_cooktop_email_HouseHold_email 
+            UNION ALL
+            select FK_Dryer_email_HouseHold_email
+            FROM Dryer JOIN DUDES ON DUDES.email=Dryer.FK_Dryer_email_HouseHold_email
+            WHERE heat_source LIKE '%gas%'
+            UNION ALL
+            select FK_oven_email_HouseHold_email
+            FROM Oven JOIN DUDES ON DUDES.email=Oven.FK_oven_email_HouseHold_email
+            WHERE has_gas_heat_source =1
+            ) ALL_GAS
+            UNION ALL
+            SELECT "electric", COUNT(*) FROM
+            (
+            select FK_cooktop_email_HouseHold_email
+            FROM Cooktop JOIN DUDES ON DUDES.email=Cooktop.FK_cooktop_email_HouseHold_email
+            WHERE heat_source LIKE '%electric%'
+            UNION ALL
+            select FK_Dryer_email_HouseHold_email
+            FROM Dryer JOIN DUDES ON DUDES.email=Dryer.FK_Dryer_email_HouseHold_email
+            WHERE heat_source LIKE '%gas%'
+            UNION ALL
+            select FK_oven_email_HouseHold_email
+            FROM Oven JOIN DUDES ON DUDES.email=Oven.FK_oven_email_HouseHold_email
+            WHERE has_electric_heat_source =1
+            ) ALL_ELECTRIC
+            UNION ALL
+            SELECT "microwave", COUNT(*) FROM
+            (
+            select FK_cooktop_email_HouseHold_email
+            FROM Cooktop JOIN DUDES ON DUDES.email=Cooktop.FK_cooktop_email_HouseHold_email
+            WHERE heat_source LIKE '%microwave%'
+            UNION ALL
+            select FK_Dryer_email_HouseHold_email
+            FROM Dryer JOIN DUDES ON DUDES.email=Dryer.FK_Dryer_email_HouseHold_email
+            WHERE heat_source LIKE '%microwave%'
+            UNION ALL
+            select FK_oven_email_HouseHold_email
+            FROM Oven JOIN DUDES ON DUDES.email=Oven.FK_oven_email_HouseHold_email
+            WHERE has_microwave_heat_source =1
+            ) ALL_MICROWAVE) ALL_HEAT
+            ORDER BY counts DESC LIMIT 1) commonHeatSource
+            )
+
+            select first_part.col1, first_part.col2, first_part.col3, first_part.col4, first_part.col5, second_part.source
+            from first_part, second_part
+            
+            ''', (lat, lat, lon, postalCode, lat, lat, lon, radius, postalCode, lat, lat, lon, radius)           
             )
             res = db.cursor.fetchall()
             return({'result': res}, 200)
