@@ -8,14 +8,16 @@ import axios from 'axios';
 
 const Top25Manufacturers = () => {
     const [top25, setTop25] = useState({});
-    const [manufacturerDrillDown, setManufacturerDrillDown] = useState({});
+    // const [manufacturerDrillDown, setManufacturerDrillDown] = useState({});
+    const [manufacturerDrillDownAll, setManufacturerDrillDownAll] = useState({});
+
     const {register, handleSubmit} = useForm('');
 
     useEffect(() => {
         const fetchData = async () => {
             const url = 'http://127.0.0.1:5000/reports/top25manufacturers'
             const res = await axios.get(`${url}`)
-            console.log(res.data['result'])
+            // console.log(res.data['result'])
             setTop25(res.data['result'])
         }
         fetchData()
@@ -25,8 +27,16 @@ const Top25Manufacturers = () => {
         const manufacturer= data['manufacturer']
         const url = 'http://127.0.0.1:5000/reports/manufacturer_drill_down/'
         const res = await axios.get(`${url}/${manufacturer}`)
-        console.log(res.data['result'])
-        setManufacturerDrillDown(res.data['result'])
+        // console.log(res.data['result'])
+        const temp = {'Dryer': 0, 'Washer': 0, 'Cooker': 0, 'Freezer': 0, 'TV': 0}
+
+        res.data['result'].map( (item) => {
+            temp[item[0]] = item[1]
+            return(null)
+        } )
+        setManufacturerDrillDownAll(temp)
+
+        // setManufacturerDrillDown(res.data['result'])
     };
 
     return(
@@ -65,7 +75,7 @@ const Top25Manufacturers = () => {
                                 </Form>
                             </Row>
                             {/* <div>{ JSON.stringify(manufacturerDrillDown) !== '{}' ? JSON.stringify(manufacturerDrillDown) : undefined}</div> */}
-                            
+                            {/* <div>{ JSON.stringify(manufacturerDrillDownAll) !== '{}' ? JSON.stringify(manufacturerDrillDownAll) : undefined}</div> */}
                             <Table >
                                 <thead>
                                     <tr>
@@ -74,18 +84,30 @@ const Top25Manufacturers = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                { manufacturerDrillDown && manufacturerDrillDown.map && manufacturerDrillDown.map((row) => {
+                                {/* { manufacturerDrillDown && manufacturerDrillDown.map && manufacturerDrillDown.map((row) => {
                                 return(<tr key={row[0]}>
                                             <td> {row[0]} </td>
                                             <td>{row[1]} </td>
                                         </tr> )
-                                }) }
+                                }) } */}
+
+
+                               
+                                { manufacturerDrillDownAll && Object.keys(manufacturerDrillDownAll).map && Object.keys(manufacturerDrillDownAll).map((key) => {
+                                    return (<tr key={key}>
+                                        <td> {key} </td>
+                                        <td>{manufacturerDrillDownAll[key]} </td>
+                                        </tr>)
+                                    })}
+
+
                                 </tbody>
                             </Table>
 
                         </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
+
 
 
         </div>
