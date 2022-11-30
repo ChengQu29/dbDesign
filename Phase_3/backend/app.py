@@ -226,7 +226,7 @@ class HouseHoldAvgByRadius(Resource):
                 TVOwnedPerHouseHold 
                 ON FreezerOwnedPerHouseHold.FK_Freezer_email_HouseHold_email = TVOwnedPerHouseHold.FK_TV_email_HouseHold_email) AS NumberOfApp), 
             x1 AS 
-                (Select distinct postal_code, email, occupant, bedroom, D, ifnull(Full.number,0) AS fullNumber, ifnull(Half.number,0) AS halfNumber, ifnull(has_gas_heat_source,0) AS gasHeat, ifnull(has_electric_heat_source,0) AS electricHeat, ifnull(has_microwave_heat_source,0) AS microwaveHeat, ifnull(Cooktop.heat_source,0) AS cooktopHeatSource, ifnull(Full.commode,0) AS FullCommode, ifnull(Half.commode,0) As HalfCommode from  
+                (Select distinct postal_code, email, occupant, bedroom, D, ifnull(Full.number,0) AS fullNumber, ifnull(Half.number,0) AS halfNumber, ifnull(Full.commode,0) AS FullCommode, ifnull(Half.commode,0) As HalfCommode from  
                 (Select postal_code, city, latitude, longitude, 
                     acos(sin(%s) * sin(latitude) + cos(%s) * cos(latitude) * cos(longitude - (%s))) * 3958.8 As D 
                 From PostalCode 
@@ -244,7 +244,7 @@ class HouseHoldAvgByRadius(Resource):
                 
             x2 AS (select email, FORMAT(x1.occupant/coalesce(ifnull(x1.FullCommode,0)+ifnull(x1.HalfCommode,0), ifnull(x1.FullCommode,0), ifnull(x1.HalfCommode,0), 0), '2:#') AS RatioOfCommodeToOccupant from x1), 
             x3 AS (select email, (ifnull(x1.fullNumber,0) + ifnull(x1.halfNumber,0)) AS NumberOfBathroom from x1)
-            select occupant, bedroom, ifnull(x3.NumberOfBathroom,0) AS NumberOfBathroom, RatioOfCommodeToOccupant, ifnull(x0.Total,0) AS NumberOfAppliance, gasHeat, electricHeat, microwaveHeat from x1 
+            select occupant, bedroom, ifnull(x3.NumberOfBathroom,0) AS NumberOfBathroom, RatioOfCommodeToOccupant, ifnull(x0.Total,0) AS NumberOfAppliance from x1 
             left join x2 
             on x1.email = x2.email 
             left join x3 
