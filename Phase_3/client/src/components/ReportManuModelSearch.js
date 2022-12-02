@@ -45,8 +45,8 @@ return(
         {ManuModelSearch && ManuModelSearch.map && ManuModelSearch.map((row, index) =>{
           if (row[1]) {
             return(<tr key={index}>
-              <td style={{backgroundColor: (searchTerm !== undefined && searchTerm !== null && row[0] !== null && row[0].toUpperCase().indexOf(searchTerm.toUpperCase()) !== -1)?"#90EE90":""}}>{row[0]}</td>
-              <td style={{backgroundColor: (searchTerm !== undefined && searchTerm !== null && row[1] !== null && row[1].toUpperCase().indexOf(searchTerm.toUpperCase()) !== -1)?"#90EE90":""}}>{row[1]}</td>
+              <td style={{whiteSpace: "pre-wrap", backgroundColor: (searchTerm !== undefined && searchTerm !== null && row[0] !== null && row[0].toUpperCase().indexOf(searchTerm.toUpperCase()) !== -1)?"#90EE90":""}}>{row[0]}</td>
+              <td style={{whiteSpace: "pre-wrap", backgroundColor: (searchTerm !== undefined && searchTerm !== null && row[1] !== null && row[1].toUpperCase().indexOf(searchTerm.toUpperCase()) !== -1)?"#90EE90":""}}>{row[1]}</td>
             </tr> ) }
         }) }
       </tbody>
