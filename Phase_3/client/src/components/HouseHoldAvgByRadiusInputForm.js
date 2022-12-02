@@ -20,7 +20,7 @@ const HouseHoldAvgByRadiusInputForm = () => {
         } catch(error) {
             return { postalCode: "PostalCode Not Found" };
         }
-        dispatch(updateRadius({ radius: form.radius, postalCode: form.postalCode }));
+        dispatch(updateRadius({ ...form, radius: form.radius ? form.radius:"0", postalCode: form.postalCode }));
         navigate("/reports/HouseHoldAvgByRadiusReport");
     };
 
@@ -57,7 +57,15 @@ const HouseHoldAvgByRadiusInputForm = () => {
                             {({input, meta}) => (
                                 <Form.Group className="mb-3">
                                     <Form.Label>Please enter the search radius</Form.Label>
-                                    <Form.Control placeholder="100" {...input} />
+                                    <Form.Select {...input}>
+                                        <option value="0">0</option>
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="250">250</option>
+                                    </Form.Select>
                                     {(meta.error || meta.submitError) && meta.touched && <Form.Text bsPrefix="text-danger">{meta.error || meta.submitError}</Form.Text>}
                                 </Form.Group>
                             )}
