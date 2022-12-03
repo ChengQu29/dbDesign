@@ -474,7 +474,7 @@ class LaundryCnt_WasherNoDryer(Resource):
             FROM WasherDryerPerHouseHold wdph
             WHERE wdph.dryer_count_per_household IS NULL AND wdph.washer_count_per_household IS NOT NULL
             GROUP BY wdph.state
-            ORDER BY count_househould_with_washer_no_dryer AND wdph.state; ''')
+            ORDER BY count_househould_with_washer_no_dryer DESC''')
             res = db.cursor.fetchall()
             print(res)
             return({'result': res}, 200)
