@@ -3,21 +3,32 @@ import { useForm } from "react-hook-form";
 import { Form, Row } from "react-bootstrap";
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import Alert from 'react-bootstrap/Alert';
 import axios from 'axios';
 
  const ReportManuModelSearch = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [ManuModelSearch, setManuModelSearch] = useState([]);
+    const [acceptedRes, setAcceptedRes] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const {register, handleSubmit} = useForm('');
 
     const onSubmitFunc = async (data) =>{
       setManuModelSearch([])
       const ManuModel = data['keyword']
+      if (!ManuModel){
+        setAcceptedRes(false)
+        return
+    }
       setSearchTerm(data['keyword']);
       const url = 'http://127.0.0.1:5000/reports/ManuModelSearch'
       setIsLoading(true);
       const res = await axios.get(`${url}/${ManuModel}`)
+      if (res.data['result'].length === 0){
+        setAcceptedRes(false)
+        return
+    }
+      setAcceptedRes(true)
       setIsLoading(false);
       setManuModelSearch(res.data['result'])
     }
@@ -33,7 +44,15 @@ return(
       </Form.Group>
       <Button as='input' type='submit' value='submit' className='mt-2'></Button>{''}
     </Form>
-    { isLoading ? "Loading ..." :
+
+      {/* error message for input */}
+      {acceptedRes === false &&
+      <Alert key="danger" variant="danger" className="mt-2" >
+          empty input or non-existing data        
+      </Alert>
+      }
+
+    { acceptedRes && isLoading ? "Loading ..." :
     <Table bordered hover>
       <thead>
         <tr>
