@@ -4,13 +4,14 @@ import { Form, Row } from "react-bootstrap";
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import Alert from 'react-bootstrap/Alert';
 import axios from 'axios';
 
 const Top25Manufacturers = () => {
     const [top25, setTop25] = useState({});
     // const [manufacturerDrillDown, setManufacturerDrillDown] = useState({});
     const [manufacturerDrillDownAll, setManufacturerDrillDownAll] = useState({});
-
+    const [acceptedRes, setAcceptedRes] = useState();
     const {register, handleSubmit} = useForm('');
 
     useEffect(() => {
@@ -25,11 +26,21 @@ const Top25Manufacturers = () => {
 
     const onSubmitFunc = async (data) => {
         const manufacturer= data['manufacturer']
+        if (!manufacturer){
+            setAcceptedRes(false)
+            return
+        }
         const url = 'http://127.0.0.1:5000/reports/manufacturer_drill_down/'
         const res = await axios.get(`${url}/${manufacturer}`)
+        console.log(res)
+
+        if (res.data['result'].length === 0){
+            setAcceptedRes(false)
+            return
+        }
+        setAcceptedRes(true)
         // console.log(res.data['result'])
         const temp = {'Dryer': 0, 'Washer': 0, 'Cooker': 0, 'Freezer': 0, 'TV': 0}
-
         res.data['result'].map( (item) => {
             temp[item[0]] = item[1]
             return(null)
@@ -76,6 +87,15 @@ const Top25Manufacturers = () => {
                             </Row>
                             {/* <div>{ JSON.stringify(manufacturerDrillDown) !== '{}' ? JSON.stringify(manufacturerDrillDown) : undefined}</div> */}
                             {/* <div>{ JSON.stringify(manufacturerDrillDownAll) !== '{}' ? JSON.stringify(manufacturerDrillDownAll) : undefined}</div> */}
+                            
+                            {/* error message */}
+                            {acceptedRes === false &&
+                            <Alert key="danger" variant="danger">
+                                empty input or non-existing data        
+                            </Alert>
+                            }
+
+                            { acceptedRes && 
                             <Table >
                                 <thead>
                                     <tr>
@@ -91,11 +111,9 @@ const Top25Manufacturers = () => {
                                         </tr> )
                                 }) } */}
 
-
-                               
-                                { manufacturerDrillDownAll && Object.keys(manufacturerDrillDownAll).map && Object.keys(manufacturerDrillDownAll).map((key) => {
+                                {manufacturerDrillDownAll && Object.keys(manufacturerDrillDownAll).map && Object.keys(manufacturerDrillDownAll).map((key) => {
                                     return (<tr key={key}>
-                                        <td> {key} </td>
+                                        <td style={{whiteSpace: "pre-wrap"}}> {key} </td>
                                         <td>{manufacturerDrillDownAll[key]} </td>
                                         </tr>)
                                     })}
@@ -103,6 +121,7 @@ const Top25Manufacturers = () => {
 
                                 </tbody>
                             </Table>
+                            }
 
                         </Accordion.Body>
                 </Accordion.Item>
