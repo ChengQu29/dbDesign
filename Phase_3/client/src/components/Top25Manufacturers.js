@@ -65,7 +65,7 @@ const Top25Manufacturers = () => {
                 { 
              top25 && top25.map && top25.map((row) => {
                 return(<tr key={row[0]}>
-                            <td> {row[0]} </td>
+                            <td style={{whiteSpace: "pre"}}> {row[0]} </td>
                             <td>{row[1]} </td>
                         </tr> )
                 }) }
