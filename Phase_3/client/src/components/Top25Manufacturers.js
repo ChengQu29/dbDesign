@@ -85,12 +85,14 @@ const Top25Manufacturers = () => {
                                     <Button as='input' type='submit' value='submit' className="mt-2"	></Button>{' '}
                                 </Form>
                             </Row>
+
+                            {/* Test */}
                             {/* <div>{ JSON.stringify(manufacturerDrillDown) !== '{}' ? JSON.stringify(manufacturerDrillDown) : undefined}</div> */}
                             {/* <div>{ JSON.stringify(manufacturerDrillDownAll) !== '{}' ? JSON.stringify(manufacturerDrillDownAll) : undefined}</div> */}
                             
-                            {/* error message */}
+                            {/* error message for input */}
                             {acceptedRes === false &&
-                            <Alert key="danger" variant="danger">
+                            <Alert key="danger" variant="danger" className="mt-2" >
                                 empty input or non-existing data        
                             </Alert>
                             }
@@ -104,6 +106,7 @@ const Top25Manufacturers = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
+
                                 {/* { manufacturerDrillDown && manufacturerDrillDown.map && manufacturerDrillDown.map((row) => {
                                 return(<tr key={row[0]}>
                                             <td> {row[0]} </td>
@@ -117,8 +120,6 @@ const Top25Manufacturers = () => {
                                         <td>{manufacturerDrillDownAll[key]} </td>
                                         </tr>)
                                     })}
-
-
                                 </tbody>
                             </Table>
                             }
