@@ -4,11 +4,13 @@ import { Form, Row } from "react-bootstrap";
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import Alert from 'react-bootstrap/Alert';
 import axios from 'axios';
 
 const AverageTVdisplaysizebystate = () => {
     const [top25, setTop25] = useState({});
     const [tvDrillDown, SetTvDrillDown] = useState({});
+    const [acceptedRes, setAcceptedRes] = useState();
     const {register, handleSubmit} = useForm('');
 
     useEffect(() => {
@@ -23,8 +25,17 @@ const AverageTVdisplaysizebystate = () => {
 
     const onSubmitFunc = async (data) => {
         const state= data['state']
+        if (!state){
+            setAcceptedRes(false)
+            return
+        }
         const url = 'http://127.0.0.1:5000/reports/AverageTVdisplaysizebystateDrilldown/'
         const res = await axios.get(`${url}/${state}`)
+        if (res.data['result'].length === 0){
+            setAcceptedRes(false)
+            return
+        }
+        setAcceptedRes(true)
         console.log(res.data['result'])
         SetTvDrillDown(res.data['result'])
     };
@@ -66,6 +77,13 @@ const AverageTVdisplaysizebystate = () => {
                             </Row>
                             {/* <div>{ JSON.stringify(tvDrillDown) !== '{}' ? JSON.stringify(tvDrillDown) : undefined}</div> */}
                             
+                            {acceptedRes === false &&
+                            <Alert key="danger" variant="danger" className="mt-2" >
+                                empty input or non-existing data        
+                            </Alert>
+                            }
+                            
+                            { acceptedRes && 
                             <Table >
                                 <thead>
                                     <tr>
@@ -84,6 +102,7 @@ const AverageTVdisplaysizebystate = () => {
                                 }) }
                                 </tbody>
                             </Table>
+                            }
 
                         </Accordion.Body>
                 </Accordion.Item>
